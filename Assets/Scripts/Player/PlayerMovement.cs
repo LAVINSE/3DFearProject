@@ -22,6 +22,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField, Tooltip(" 나아갈 방향 ")] private Transform orientation;
     [SerializeField, Tooltip(" 이동 상태 ")] private MovementState movementState;
 
+    [Header("=====> 경사면 설정 <=====")]
+    [SerializeField, Tooltip(" 최대 각 ")] private float maxSlopeAngle;
+    [SerializeField, Tooltip(" 보정 값 ")] private float correctPlayerSlopeHeight;
+    [SerializeField] private bool isExitingSlop;
+    [SerializeField] private RaycastHit slopeHit;
+
     [Header("=====> 웅크리기 설정 <=====")]
     [SerializeField, Tooltip(" 웅크리기 속도 ")] private float crouchSpeed;
     [SerializeField, Tooltip(" 웅크리기 Y 값 ")] private float crouchScaleY;
@@ -31,7 +37,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField, Tooltip(" 점프 힘 ")] private float jumpPower;
     [SerializeField, Tooltip(" 점프 쿨타임 ")] private float jumpCooldown;
     [SerializeField, Tooltip(" 플레이어 객체 높이 ")] private float playerHeight;
-    [SerializeField, Tooltip(" 플레이어 객체 높이 보정 값 ")] private float correctPlayerHeight;
+    [SerializeField, Tooltip(" 보정 값 ")] private float correctPlayerJumpHeight;
     [SerializeField, Tooltip(" 바닥 레이어 ")] private LayerMask groundLayer;
 
     [Header("=====> 키 입력 <=====")]
@@ -49,6 +55,7 @@ public class PlayerMovement : MonoBehaviour
     private float horizontalInput;
     private float verticalInput;
 
+    // 방향
     private Vector3 moveDirection;
 
     private Rigidbody rigid;
@@ -77,7 +84,7 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         // 오브젝트의 높이 절반 + 보정값
-        isGround = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + correctPlayerHeight, groundLayer);
+        isGround = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + correctPlayerJumpHeight, groundLayer);
 
         // 플레이어 입력처리
         PlayerInput();
@@ -156,7 +163,6 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             movementState = MovementState.air;
-
         }
     }
 
@@ -166,28 +172,50 @@ public class PlayerMovement : MonoBehaviour
         // 이동방향 계산
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
-        // 이동
-        rigid.AddForce(moveDirection.normalized * moveSpeed * correctMoveSpeed * airMultiplier, ForceMode.Force);
+        // 경사면 일 경우
+        if (OnSlope() && !isExitingSlop)
+        {
+            rigid.AddForce(GetSlopMoveDirection() * moveSpeed * correctMoveSpeed * airMultiplier, ForceMode.Force);
+        }
+        else
+        {
+            Debug.Log("?");
+            // 이동
+            rigid.AddForce(moveDirection.normalized * moveSpeed * correctMoveSpeed * airMultiplier, ForceMode.Force);
+        }
     }
 
     /** 플레이어 속도제어 */
     private void PlayerSpeedControl()
     {
-        // 속도
-        Vector3 currentVelocity = new Vector3(rigid.velocity.x, 0f, rigid.velocity.z);
-
-        // 현재 속도가 이동속도보다 클 경우
-        if(currentVelocity.magnitude > moveSpeed)
+        // 경사면 일 경우
+        if (OnSlope() && !isExitingSlop)
         {
-            // 같은 방향 moveSpeed로 크기 제한
-            Vector3 limitVelocity = currentVelocity.normalized * moveSpeed;
-            rigid.velocity = new Vector3(limitVelocity.x, rigid.velocity.y, limitVelocity.z);
+            if(rigid.velocity.magnitude > moveSpeed)
+            {
+                rigid.velocity = rigid.velocity.normalized * moveSpeed;
+            }
+        }
+        else
+        {
+            // 속도
+            Vector3 currentVelocity = new Vector3(rigid.velocity.x, 0f, rigid.velocity.z);
+
+            // 현재 속도가 이동속도보다 클 경우
+            if (currentVelocity.magnitude > moveSpeed)
+            {
+                // 같은 방향 moveSpeed로 크기 제한
+                Vector3 limitVelocity = currentVelocity.normalized * moveSpeed;
+                rigid.velocity = new Vector3(limitVelocity.x, rigid.velocity.y, limitVelocity.z);
+            }
         }
     }
 
     /** 플레이어 점프 */
     private void PlayerJump()
     {
+        isExitingSlop = true;
+
         rigid.velocity = new Vector3(rigid.velocity.x, 0f, rigid.velocity.z);
 
         rigid.AddForce(transform.up * jumpPower, ForceMode.Impulse);
@@ -197,6 +225,7 @@ public class PlayerMovement : MonoBehaviour
     private void PlayerResetJump()
     {
         isJump = true;
+        isExitingSlop = false;
     }
 
     /** 저항 값 제어 */
@@ -207,6 +236,25 @@ public class PlayerMovement : MonoBehaviour
 
         // 점프했을때 안했을때 움직이는 속도 조정
         airMultiplier = isGround ? 1 : (1 / (baseDrag + 1));
+    }
+
+    /** 경사면인지 확인 */
+    private bool OnSlope()
+    {
+        // 
+        if (Physics.Raycast(this.transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + correctPlayerSlopeHeight))
+        {
+            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            return angle < maxSlopeAngle && angle != 0;
+        }
+
+        return false;
+    }
+
+    /** 경사면에서 이동방향 가져오기 */
+    private Vector3 GetSlopMoveDirection()
+    {
+        return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal);
     }
     #endregion  // 함수
 }
