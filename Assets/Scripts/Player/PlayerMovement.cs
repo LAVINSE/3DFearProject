@@ -179,7 +179,6 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            Debug.Log("?");
             // ¿Ãµø
             rigid.AddForce(moveDirection.normalized * moveSpeed * correctMoveSpeed * airMultiplier, ForceMode.Force);
         }
