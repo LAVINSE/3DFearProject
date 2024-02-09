@@ -728,8 +728,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridSizeWidth: 20
   gridSizeHeight: 10
-  inventoryItemPrefab: {fileID: 764537635422680759, guid: d9af2e85ba4f1dc40bde319e9c6aed52,
-    type: 3}
 --- !u!114 &887293848
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -886,7 +884,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1104101995}
   m_Layer: 0
-  m_Name: 30:13
+  m_Name: 41:23
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

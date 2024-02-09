@@ -8,7 +8,6 @@ public class ItemGrid : MonoBehaviour
     #region 변수
     [SerializeField] private int gridSizeWidth = 20;
     [SerializeField] private int gridSizeHeight = 10;
-    [SerializeField] private GameObject inventoryItemPrefab;
 
     private const float tileSizeWidth = 32;
     private const float tileSizeHeight = 32;
@@ -28,9 +27,6 @@ public class ItemGrid : MonoBehaviour
     {
         rectTransform = GetComponent<RectTransform>();
         Init(gridSizeWidth, gridSizeHeight);
-
-        InventoryItem inventoryItem = Instantiate(inventoryItemPrefab).GetComponent<InventoryItem>();
-        PlaceItem(inventoryItem, 3, 2);
     }
 
     /** 인벤토리 타일 크기 설정 및 아이템 크기 이차원 배열 초기화 */
@@ -56,19 +52,24 @@ public class ItemGrid : MonoBehaviour
         return tileGridPosition;
     }
 
+    /** 아이템을 특정 좌표에 배치한다 */
     public void PlaceItem(InventoryItem inventoryItem, int posX, int posY)
     {
         RectTransform rectTransform = inventoryItem.GetComponent<RectTransform>();
         rectTransform.SetParent(this.rectTransform);
         inventoryItemSlots[posX, posY] = inventoryItem;
 
+        // 중심 계산
         Vector2 position = new Vector2();
         position.x = posX * tileSizeWidth + tileSizeWidth / 2;
         position.y = -(posY * tileSizeHeight + tileSizeHeight / 2);
 
+        // 위치 변경
         rectTransform.localPosition = position;
     }
 
+
+    /** 특정 좌표에 있는 아이템을 선택한다 */
     public InventoryItem PickUpItem(int x, int y)
     {
         InventoryItem toReturn = inventoryItemSlots[x, y];

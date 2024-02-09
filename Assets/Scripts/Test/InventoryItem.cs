@@ -5,8 +5,7 @@ using UnityEngine;
 public class InventoryItem : MonoBehaviour
 {
     #region 변수
-    public int sizeWidth = 1;
-    public int sizeHeight = 1;
+    public ItemData itemdata;
     #endregion // 변수
 
     #region 함수
