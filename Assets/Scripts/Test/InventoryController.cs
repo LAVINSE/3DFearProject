@@ -6,6 +6,7 @@ using UnityEngine;
 public class InventoryController : MonoBehaviour
 {
     #region 변수
+    [SerializeField] private List<ItemData> items;
     [HideInInspector] public ItemGrid selectedItemGrid;
 
     private InventoryItem selectedItem;
@@ -18,6 +19,11 @@ public class InventoryController : MonoBehaviour
     {
         ItemIconDrag();
 
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            CreateRandomItem();
+        }
+
         if(selectedItemGrid == null) { return; }
 
         // 마우스 왼쪽 클릭을 했을경우
@@ -26,7 +32,12 @@ public class InventoryController : MonoBehaviour
             LeftMouseButtonPress();
         }
     }
-    
+
+    private void CreateRandomItem()
+    {
+        
+    }
+
     /** 아이템 아이콘을 드래그 한다 */
     private void ItemIconDrag()
     {

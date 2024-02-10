@@ -884,7 +884,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1104101995}
   m_Layer: 0
-  m_Name: 41:23
+  m_Name: 42:15
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1595,6 +1595,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c970f31bc08f38343a99cba2f0d86b9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  items: []
   selectedItemGrid: {fileID: 0}
 --- !u!114 &2046910148
 MonoBehaviour:
