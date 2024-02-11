@@ -12,6 +12,7 @@ public class InventoryController : MonoBehaviour
     [HideInInspector] public ItemGrid selectedItemGrid;
 
     private InventoryItem selectedItem;
+    private InventoryItem overlapItem;
     private RectTransform selectedItemRectTransform;
     #endregion // 변수
 
@@ -89,11 +90,21 @@ public class InventoryController : MonoBehaviour
     private void PlaceItem(Vector2Int tileGridPosition)
     {
         // 가져온 좌표에 선택된 아이템을 배치한다
-        bool complete = selectedItemGrid.PlaceItem(selectedItem, tileGridPosition.x, tileGridPosition.y);
+        bool complete = selectedItemGrid.PlaceItem(selectedItem, tileGridPosition.x, tileGridPosition.y, ref overlapItem);
 
         if (complete)
         {
             selectedItem = null;
+
+            // 오버랩된 아이템이 있을 경우
+            if(overlapItem != null)
+            {
+                // 오버랩된 아이템을 선택중인 아이템으로 변경
+                selectedItem = overlapItem;
+                // 오버랩 아이템 초기화
+                overlapItem = null;
+                selectedItemRectTransform = selectedItem.GetComponent<RectTransform>();
+            }
         }
     }
     #endregion // 함수
