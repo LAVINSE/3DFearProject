@@ -9,8 +9,8 @@ public class ItemGrid : MonoBehaviour
     [SerializeField] private int gridSizeWidth = 20;
     [SerializeField] private int gridSizeHeight = 10;
 
-    private const float tileSizeWidth = 32;
-    private const float tileSizeHeight = 32;
+    public const float tileSizeWidth = 32;
+    public const float tileSizeHeight = 32;
 
     private InventoryItem[,] inventoryItemSlots;
 
@@ -53,19 +53,36 @@ public class ItemGrid : MonoBehaviour
     }
 
     /** 아이템을 특정 좌표에 배치한다 */
-    public void PlaceItem(InventoryItem inventoryItem, int posX, int posY)
+    public bool PlaceItem(InventoryItem inventoryItem, int posX, int posY)
     {
+        if(BoundryCheck(posX, posY, inventoryItem.itemData.width, inventoryItem.itemData.heigth) == false)
+        {
+            return false;
+        }
+
         RectTransform rectTransform = inventoryItem.GetComponent<RectTransform>();
         rectTransform.SetParent(this.rectTransform);
-        inventoryItemSlots[posX, posY] = inventoryItem;
+
+        for(int x = 0; x < inventoryItem.itemData.width; x++)
+        {
+            for(int y = 0; y < inventoryItem.itemData.heigth; y++)
+            {
+                inventoryItemSlots[posX + x, posY + y] = inventoryItem;
+            }
+        }
+
+        inventoryItem.onGridPositionX = posX;
+        inventoryItem.onGridPositionY = posY;
 
         // 중심 계산
         Vector2 position = new Vector2();
-        position.x = posX * tileSizeWidth + tileSizeWidth / 2;
-        position.y = -(posY * tileSizeHeight + tileSizeHeight / 2);
+        position.x = posX * tileSizeWidth + tileSizeWidth * inventoryItem.itemData.width / 2;
+        position.y = -(posY * tileSizeHeight + tileSizeHeight * inventoryItem.itemData.heigth / 2);
 
         // 위치 변경
         rectTransform.localPosition = position;
+
+        return true;
     }
 
 
@@ -73,9 +90,44 @@ public class ItemGrid : MonoBehaviour
     public InventoryItem PickUpItem(int x, int y)
     {
         InventoryItem toReturn = inventoryItemSlots[x, y];
-        inventoryItemSlots[x, y] = null;
 
+        if(toReturn == null) { return null; }
+
+        for(int ix = 0; ix < toReturn.itemData.width; ix++)
+        {
+            for(int iy = 0; iy < toReturn.itemData.heigth; iy++)
+            {
+                inventoryItemSlots[toReturn.onGridPositionX + ix, toReturn.onGridPositionY + iy] = null;
+            }
+        }
+        
         return toReturn;
+    }
+
+    private bool PositionCheck(int posX, int posY)
+    {
+        if(posX < 0 || posY < 0)
+        {
+            return false;
+        }
+
+        if(posX >= gridSizeWidth || posY >= gridSizeHeight) 
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool BoundryCheck(int posX, int posY, int width, int height)
+    {
+        if(PositionCheck(posX, posY) == false) { return false; }
+
+        posX += width - 1;
+        posY += height - 1;
+
+        if(PositionCheck(posX, posY) == false) { return false; }
+        return true;
     }
     #endregion // 함수
 }

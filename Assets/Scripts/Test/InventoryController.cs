@@ -7,6 +7,8 @@ public class InventoryController : MonoBehaviour
 {
     #region 변수
     [SerializeField] private List<ItemData> items;
+    [SerializeField] private GameObject itemPrefab;
+    [SerializeField] private Transform canvasTransform;
     [HideInInspector] public ItemGrid selectedItemGrid;
 
     private InventoryItem selectedItem;
@@ -35,7 +37,14 @@ public class InventoryController : MonoBehaviour
 
     private void CreateRandomItem()
     {
-        
+        InventoryItem inventoryItem = Instantiate(itemPrefab).GetComponent<InventoryItem>();
+        selectedItem = inventoryItem;
+
+        selectedItemRectTransform = inventoryItem.GetComponent<RectTransform>();
+        selectedItemRectTransform.SetParent(canvasTransform);
+
+        int selectedItemID = UnityEngine.Random.Range(0, items.Count);
+        inventoryItem.Set(items[selectedItemID]);
     }
 
     /** 아이템 아이콘을 드래그 한다 */
@@ -80,8 +89,12 @@ public class InventoryController : MonoBehaviour
     private void PlaceItem(Vector2Int tileGridPosition)
     {
         // 가져온 좌표에 선택된 아이템을 배치한다
-        selectedItemGrid.PlaceItem(selectedItem, tileGridPosition.x, tileGridPosition.y);
-        selectedItem = null;
+        bool complete = selectedItemGrid.PlaceItem(selectedItem, tileGridPosition.x, tileGridPosition.y);
+
+        if (complete)
+        {
+            selectedItem = null;
+        }
     }
     #endregion // 함수
 }

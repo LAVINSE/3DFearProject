@@ -8,7 +8,7 @@ public class GridInteract : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 {
     #region 변수
     private InventoryController inventoryController;
-    private ItemGrid itemGird;
+    private ItemGrid itemGrid;
     #endregion // 변수
 
     #region 함수 
@@ -16,13 +16,13 @@ public class GridInteract : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     private void Awake()
     {
         inventoryController = FindObjectOfType(typeof(InventoryController)) as InventoryController;
-        itemGird = GetComponent<ItemGrid>();
+        itemGrid = GetComponent<ItemGrid>();
     }
 
     /** 마우스 커서가 충돌 영역 안으로 들어 올때 */
     public void OnPointerEnter(PointerEventData eventData)
     {
-        inventoryController.selectedItemGrid = itemGird;   
+        inventoryController.selectedItemGrid = itemGrid;   
     }
 
     /** 마우스 커서가 충돌 영역 밖으로 나갈 때 */
