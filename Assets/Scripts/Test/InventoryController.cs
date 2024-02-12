@@ -9,14 +9,22 @@ public class InventoryController : MonoBehaviour
     [SerializeField] private List<ItemData> items;
     [SerializeField] private GameObject itemPrefab;
     [SerializeField] private Transform canvasTransform;
-    [HideInInspector] public ItemGrid selectedItemGrid;
+    [HideInInspector] public ItemGrid selectedItemGrid; // 아이템 인벤토리 변수
 
     private InventoryItem selectedItem;
     private InventoryItem overlapItem;
     private RectTransform selectedItemRectTransform;
+    private InventoryHighlight inventoryHighlight;
+    private InventoryItem itemToHighlight;
     #endregion // 변수
 
     #region 함수
+    /** 초기화 */
+    private void Awake()
+    {
+        inventoryHighlight = this.GetComponent<InventoryHighlight>();
+    }
+
     /** 초기화 => 상태를 갱신한다 */
     private void Update()
     {
@@ -28,6 +36,8 @@ public class InventoryController : MonoBehaviour
         }
 
         if(selectedItemGrid == null) { return; }
+
+        HandleHighlight();
 
         // 마우스 왼쪽 클릭을 했을경우
         if (Input.GetMouseButtonDown(0))
@@ -48,6 +58,26 @@ public class InventoryController : MonoBehaviour
         inventoryItem.Set(items[selectedItemID]);
     }
 
+    private void HandleHighlight()
+    {
+        Vector2Int positionOnGrid = GetTileGridPosition();
+
+        if (selectedItem == null)
+        {
+            itemToHighlight = selectedItemGrid.GetItem(positionOnGrid.x, positionOnGrid.y);
+
+            if(itemToHighlight != null)
+            {
+                inventoryHighlight.SetSize(itemToHighlight);
+                inventoryHighlight.SetPosition(selectedItemGrid, itemToHighlight);
+            }
+        }
+        else
+        {
+
+        }
+    }
+
     /** 아이템 아이콘을 드래그 한다 */
     private void ItemIconDrag()
     {
@@ -62,19 +92,7 @@ public class InventoryController : MonoBehaviour
     /** 왼쪽 마우스 버튼을 눌렀을 경우*/
     private void LeftMouseButtonPress()
     {
-        // 마우스 위치
-        Vector2 position = Input.mousePosition;
-
-        // 선택된 아이템이 있을 경우
-        if(selectedItem != null)
-        {
-            // 마우스 위치를 아이템의 중심으로 변경
-            position.x -= (selectedItem.itemData.width - 1) * ItemGrid.tileSizeWidth / 2;
-            position.y += (selectedItem.itemData.heigth - 1) * ItemGrid.tileSizeHeight / 2;
-        }
-
-        // 타일 좌표를 가져온다
-        Vector2Int tileGridPosition = selectedItemGrid.GetTileGridPosition(position);
+        Vector2Int tileGridPosition = GetTileGridPosition();
 
         // 선택된 아이템이 없을 경우
         if (selectedItem == null)
@@ -88,6 +106,24 @@ public class InventoryController : MonoBehaviour
             // 해당 위치에 배치
             PlaceItem(tileGridPosition);
         }
+    }
+
+    /** 마우스 위치에 따라 타일 좌표를 가져온다 */
+    private Vector2Int GetTileGridPosition()
+    {
+        // 마우스 위치
+        Vector2 position = Input.mousePosition;
+
+        // 선택된 아이템이 있을 경우
+        if (selectedItem != null)
+        {
+            // 마우스 위치를 아이템의 중심으로 변경
+            position.x -= (selectedItem.itemData.width - 1) * ItemGrid.tileSizeWidth / 2;
+            position.y += (selectedItem.itemData.heigth - 1) * ItemGrid.tileSizeHeight / 2;
+        }
+
+        // 타일 좌표를 가져온다
+        return selectedItemGrid.GetTileGridPosition(position);
     }
 
     /** 아이템을 선택한다 */

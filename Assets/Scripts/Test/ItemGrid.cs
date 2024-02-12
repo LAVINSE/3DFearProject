@@ -39,7 +39,7 @@ public class ItemGrid : MonoBehaviour
         rectTransform.sizeDelta = size;
     }
 
-    /** 마우스 위치에 따라 좌표를 반환한다 */
+    /** 마우스 위치에 따라 타일의 좌표를 반환한다 */
     public Vector2Int GetTileGridPosition(Vector2 mousePosition)
     {
         // 마우스 위치를 UI 좌표로 변환하여 저장
@@ -57,14 +57,14 @@ public class ItemGrid : MonoBehaviour
     public bool PlaceItem(InventoryItem inventoryItem, int posX, int posY, ref InventoryItem overlapItem)
     {
         // 아이템을 배치할 위치가 유효한지 검사한다
-        if(BoundryCheck(posX, posY, inventoryItem.itemData.width, inventoryItem.itemData.heigth) == false)
+        if (BoundryCheck(posX, posY, inventoryItem.itemData.width, inventoryItem.itemData.heigth) == false)
         {
             // 배치 실패
             return false;
         }
 
         // 오버랩이 발생했을 경우
-        if(OverlapCheck(posX, posY, inventoryItem.itemData.width, inventoryItem.itemData.heigth, ref overlapItem) == false)
+        if (OverlapCheck(posX, posY, inventoryItem.itemData.width, inventoryItem.itemData.heigth, ref overlapItem) == false)
         {
             // 오버랩된 아이템을 비운다.
             overlapItem = null;
@@ -72,7 +72,7 @@ public class ItemGrid : MonoBehaviour
         }
 
         // 오버랩된 아이템이 존재할 경우
-        if(overlapItem != null)
+        if (overlapItem != null)
         {
             // 인벤토리 그리드에서 해당 아이템을 제거합니다.
             CleanGridReference(overlapItem);
@@ -85,9 +85,9 @@ public class ItemGrid : MonoBehaviour
         rectTransform.SetParent(this.rectTransform);
 
         // 아이템 크기 만큼 위치한 좌표 더하기, 어디에 위치하는지 추적할때 사용
-        for(int x = 0; x < inventoryItem.itemData.width; x++)
+        for (int x = 0; x < inventoryItem.itemData.width; x++)
         {
-            for(int y = 0; y < inventoryItem.itemData.heigth; y++)
+            for (int y = 0; y < inventoryItem.itemData.heigth; y++)
             {
                 inventoryItemSlots[posX + x, posY + y] = inventoryItem;
             }
@@ -97,16 +97,24 @@ public class ItemGrid : MonoBehaviour
         inventoryItem.onGridPositionX = posX;
         inventoryItem.onGridPositionY = posY;
 
-        // 중심 계산
-        Vector2 position = new Vector2();
-        position.x = posX * tileSizeWidth + tileSizeWidth * inventoryItem.itemData.width / 2;
-        position.y = -(posY * tileSizeHeight + tileSizeHeight * inventoryItem.itemData.heigth / 2);
+        // 아이템이 위치할 그리드의 좌표를 받아서 중심을 계산한다
+        Vector2 position = CalculatePositionOnGrid(inventoryItem, posX, posY);
 
         // 위치 변경
         rectTransform.localPosition = position;
 
         // 배치 성공
         return true;
+    }
+
+    /** 아이템이 위치할 그리드의 좌표를 받아서 중심을 계산한다 */
+    public Vector2 CalculatePositionOnGrid(InventoryItem inventoryItem, int posX, int posY)
+    {
+        // 중심 계산
+        Vector2 position = new Vector2();
+        position.x = posX * tileSizeWidth + tileSizeWidth * inventoryItem.itemData.width / 2;
+        position.y = -(posY * tileSizeHeight + tileSizeHeight * inventoryItem.itemData.heigth / 2);
+        return position;
     }
 
 
@@ -209,6 +217,11 @@ public class ItemGrid : MonoBehaviour
 
         // 오버랩이 발생하지 않았다
         return true;
+    }
+
+    public InventoryItem GetItem(int x, int y)
+    {
+        
     }
     #endregion // 함수
 }
