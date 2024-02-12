@@ -51,8 +51,10 @@ public class InventoryController : MonoBehaviour
     /** 아이템 아이콘을 드래그 한다 */
     private void ItemIconDrag()
     {
+        // 선택된 아이템이 있을 경우
         if (selectedItem != null)
         {
+            // 선택된 아이템의 위치를 마우스 위치로
             selectedItemRectTransform.position = Input.mousePosition;
         }
     }
@@ -60,15 +62,30 @@ public class InventoryController : MonoBehaviour
     /** 왼쪽 마우스 버튼을 눌렀을 경우*/
     private void LeftMouseButtonPress()
     {
-        // 좌표를 가져온다
-        Vector2Int tileGridPosition = selectedItemGrid.GetTileGridPosition(Input.mousePosition);
+        // 마우스 위치
+        Vector2 position = Input.mousePosition;
 
+        // 선택된 아이템이 있을 경우
+        if(selectedItem != null)
+        {
+            // 마우스 위치를 아이템의 중심으로 변경
+            position.x -= (selectedItem.itemData.width - 1) * ItemGrid.tileSizeWidth / 2;
+            position.y += (selectedItem.itemData.heigth - 1) * ItemGrid.tileSizeHeight / 2;
+        }
+
+        // 타일 좌표를 가져온다
+        Vector2Int tileGridPosition = selectedItemGrid.GetTileGridPosition(position);
+
+        // 선택된 아이템이 없을 경우
         if (selectedItem == null)
         {
+            // 해당 위치에 아이템을 선택한다
             PickUpItem(tileGridPosition);
         }
+        // 선택된 아이템이 있을 경우
         else
         {
+            // 해당 위치에 배치
             PlaceItem(tileGridPosition);
         }
     }
@@ -92,8 +109,10 @@ public class InventoryController : MonoBehaviour
         // 가져온 좌표에 선택된 아이템을 배치한다
         bool complete = selectedItemGrid.PlaceItem(selectedItem, tileGridPosition.x, tileGridPosition.y, ref overlapItem);
 
+        // 아이템 배치에 성공했을 경우
         if (complete)
         {
+            // 선택된 아이템 초기화
             selectedItem = null;
 
             // 오버랩된 아이템이 있을 경우
