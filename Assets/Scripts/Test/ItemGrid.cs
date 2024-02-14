@@ -219,9 +219,10 @@ public class ItemGrid : MonoBehaviour
         return true;
     }
 
+    /** 입력한 좌표에 있는 아이템을 가져온다 */
     public InventoryItem GetItem(int x, int y)
     {
-        
+        return inventoryItemSlots[x, y];
     }
     #endregion // 함수
 }

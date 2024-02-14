@@ -35,7 +35,11 @@ public class InventoryController : MonoBehaviour
             CreateRandomItem();
         }
 
-        if(selectedItemGrid == null) { return; }
+        if(selectedItemGrid == null)
+        {
+            inventoryHighlight.Show(false);
+            return;
+        }
 
         HandleHighlight();
 
@@ -60,16 +64,27 @@ public class InventoryController : MonoBehaviour
 
     private void HandleHighlight()
     {
+        // 마우스 위치에 따라 타일 좌표를 가져온다
         Vector2Int positionOnGrid = GetTileGridPosition();
 
         if (selectedItem == null)
         {
+            // 아이템 인벤토리에서 입력한 좌표에 있는 아이템을 가져온다
             itemToHighlight = selectedItemGrid.GetItem(positionOnGrid.x, positionOnGrid.y);
 
             if(itemToHighlight != null)
             {
+                inventoryHighlight.Show(true);
                 inventoryHighlight.SetSize(itemToHighlight);
+                inventoryHighlight.SetParent(selectedItemGrid);
                 inventoryHighlight.SetPosition(selectedItemGrid, itemToHighlight);
+            }
+            else
+            {
+                inventoryHighlight.Show(false);
+                inventoryHighlight.SetSize(selectedItem);
+                inventoryHighlight.SetParent(selectedItemGrid);
+                inventoryHighlight.SetPosition(selectedItemGrid, selectedItem, positionOnGrid.x, positionOnGrid.y);
             }
         }
         else
@@ -92,6 +107,7 @@ public class InventoryController : MonoBehaviour
     /** 왼쪽 마우스 버튼을 눌렀을 경우*/
     private void LeftMouseButtonPress()
     {
+        // 마우스 위치에 따라 타일 좌표를 가져온다
         Vector2Int tileGridPosition = GetTileGridPosition();
 
         // 선택된 아이템이 없을 경우
