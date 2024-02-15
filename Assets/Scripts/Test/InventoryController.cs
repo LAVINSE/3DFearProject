@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Analytics;
 
 public class InventoryController : MonoBehaviour
 {
@@ -9,14 +11,27 @@ public class InventoryController : MonoBehaviour
     [SerializeField] private List<ItemData> items;
     [SerializeField] private GameObject itemPrefab;
     [SerializeField] private Transform canvasTransform;
-    [HideInInspector] public ItemGrid selectedItemGrid; // 아이템 인벤토리 변수
 
+    private ItemGrid selectedItemGrid; // 아이템 인벤토리 변수
     private InventoryItem selectedItem;
     private InventoryItem overlapItem;
     private RectTransform selectedItemRectTransform;
     private InventoryHighlight inventoryHighlight;
     private InventoryItem itemToHighlight;
+    private Vector2Int oldPosition;
     #endregion // 변수
+
+    #region 프로퍼티
+    public ItemGrid SelectedItemGrid
+    {
+        get => selectedItemGrid;
+        set
+        {
+            selectedItemGrid = value;
+            inventoryHighlight.SetParent(value);
+        }
+    }
+    #endregion // 프로퍼티
 
     #region 함수
     /** 초기화 */
@@ -28,24 +43,31 @@ public class InventoryController : MonoBehaviour
     /** 초기화 => 상태를 갱신한다 */
     private void Update()
     {
+        // 아이템 아이콘 드래그
         ItemIconDrag();
 
+        // Q를 눌렀을 경우
         if (Input.GetKeyDown(KeyCode.Q))
         {
+            // 아이템 생성
             CreateRandomItem();
         }
 
+        // 인벤토리가 없을 경우
         if(selectedItemGrid == null)
         {
+            // 아이템 강조표시 비활성화
             inventoryHighlight.Show(false);
             return;
         }
 
+        // 아이템 강조 표시 동작
         HandleHighlight();
 
         // 마우스 왼쪽 클릭을 했을경우
         if (Input.GetMouseButtonDown(0))
         {
+            // 왼쪽 클릭을 했을때 작동
             LeftMouseButtonPress();
         }
     }
@@ -62,34 +84,52 @@ public class InventoryController : MonoBehaviour
         inventoryItem.Set(items[selectedItemID]);
     }
 
+    /** 아이템 강조 표시를 동작한다 */
     private void HandleHighlight()
     {
         // 마우스 위치에 따라 타일 좌표를 가져온다
         Vector2Int positionOnGrid = GetTileGridPosition();
 
+        // 이전 위치와 현재 위치가 같다면 종료
+        if(oldPosition == positionOnGrid) { return; }
+
+        // 이전 위치를 현재 위치로 업데이트
+        oldPosition = positionOnGrid;
+
+        // 선택된 아이템이 없을 경우
         if (selectedItem == null)
         {
             // 아이템 인벤토리에서 입력한 좌표에 있는 아이템을 가져온다
             itemToHighlight = selectedItemGrid.GetItem(positionOnGrid.x, positionOnGrid.y);
 
+            // 인벤토리에서 아이템을 찾았다면
             if(itemToHighlight != null)
             {
+                // 강조표시를 활성화 한다
                 inventoryHighlight.Show(true);
+                // 강조의 크기를 설정한다
                 inventoryHighlight.SetSize(itemToHighlight);
-                inventoryHighlight.SetParent(selectedItemGrid);
+                // 강조의 위치를 설정한다
                 inventoryHighlight.SetPosition(selectedItemGrid, itemToHighlight);
             }
+            // 아이템을 못 찾았다면
             else
             {
+                // 강조표시를 비활성화 한다
                 inventoryHighlight.Show(false);
-                inventoryHighlight.SetSize(selectedItem);
-                inventoryHighlight.SetParent(selectedItemGrid);
-                inventoryHighlight.SetPosition(selectedItemGrid, selectedItem, positionOnGrid.x, positionOnGrid.y);
             }
         }
+        // 선택된 아이템이 있을 경우
         else
         {
+            // 현재 위치에 아이템을 배치할 수 있는지 여부에 따라 인벤토리 강조를 표시한다
+            inventoryHighlight.Show(selectedItemGrid.BoundryCheck(positionOnGrid.x, positionOnGrid.y,
+                    selectedItem.itemData.width, selectedItem.itemData.heigth));
 
+            // 강조의 크기를 설정한다
+            inventoryHighlight.SetSize(selectedItem);
+            // 강조의 크기를 설정한다
+            inventoryHighlight.SetPosition(selectedItemGrid, selectedItem, positionOnGrid.x, positionOnGrid.y);
         }
     }
 

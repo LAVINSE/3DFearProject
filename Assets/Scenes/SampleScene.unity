@@ -691,7 +691,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_RaycastPadding: {x: 1, y: 1, z: 1, w: 1}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -884,7 +884,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1104101995}
   m_Layer: 0
-  m_Name: 1:33:28
+  m_Name: 1:41:51
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1679,7 +1679,6 @@ MonoBehaviour:
   itemPrefab: {fileID: 764537635422680759, guid: d9af2e85ba4f1dc40bde319e9c6aed52,
     type: 3}
   canvasTransform: {fileID: 1573816639}
-  selectedItemGrid: {fileID: 0}
 --- !u!114 &2046910148
 MonoBehaviour:
   m_ObjectHideFlags: 0

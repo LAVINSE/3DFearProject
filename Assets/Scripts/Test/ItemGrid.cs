@@ -117,7 +117,6 @@ public class ItemGrid : MonoBehaviour
         return position;
     }
 
-
     /** 특정 좌표에 있는 아이템을 선택한다 */
     public InventoryItem PickUpItem(int x, int y)
     {
@@ -169,7 +168,7 @@ public class ItemGrid : MonoBehaviour
     }
 
     /** 좌표와 크기에 대한 경계를 검사한다 */
-    private bool BoundryCheck(int posX, int posY, int width, int height)
+    public bool BoundryCheck(int posX, int posY, int width, int height)
     {
         // 입력한 좌표가 그리드 내에 있는지 확인
         if(PositionCheck(posX, posY) == false) { return false; }

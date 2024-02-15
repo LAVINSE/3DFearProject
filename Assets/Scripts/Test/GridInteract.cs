@@ -22,13 +22,13 @@ public class GridInteract : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     /** 마우스 커서가 충돌 영역 안으로 들어 올때 */
     public void OnPointerEnter(PointerEventData eventData)
     {
-        inventoryController.selectedItemGrid = itemGrid;   
+        inventoryController.SelectedItemGrid = itemGrid;   
     }
 
     /** 마우스 커서가 충돌 영역 밖으로 나갈 때 */
     public void OnPointerExit(PointerEventData eventData)
     {
-        inventoryController.selectedItemGrid = null;
+        inventoryController.SelectedItemGrid = null;
     }
     #endregion // 함수
 }

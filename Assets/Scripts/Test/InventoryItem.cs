@@ -14,12 +14,13 @@ public class InventoryItem : MonoBehaviour
     #endregion // 변수
 
     #region 함수
-    internal void Set(ItemData itemData)
+    public void Set(ItemData itemData)
     {
         this.itemData = itemData;
 
         this.GetComponent<Image>().sprite = itemData.itemIcon;
 
+        // 아이템 크기 계산
         Vector2 size = new Vector2();
         size.x = itemData.width * ItemGrid.tileSizeWidth;
         size.y = itemData.heigth * ItemGrid.tileSizeHeight;
