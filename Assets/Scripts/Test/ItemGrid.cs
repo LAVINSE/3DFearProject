@@ -223,5 +223,19 @@ public class ItemGrid : MonoBehaviour
     {
         return inventoryItemSlots[x, y];
     }
+
+    public Vector2Int FindSpaceForObject(InventoryItem itemToInsert)
+    {
+        int height = gridSizeHeight - itemToInsert.itemData.heigth;
+        int width = gridSizeWidth - itemToInsert.itemData.width;
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+
+            }
+        }
+    }
     #endregion // ÇÔ¼ö
 }

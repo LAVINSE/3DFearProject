@@ -53,8 +53,13 @@ public class InventoryController : MonoBehaviour
             CreateRandomItem();
         }
 
+        if(Input.GetKeyDown(KeyCode.W))
+        {
+            InsertRandomItem();
+        }
+
         // 인벤토리가 없을 경우
-        if(selectedItemGrid == null)
+        if (selectedItemGrid == null)
         {
             // 아이템 강조표시 비활성화
             inventoryHighlight.Show(false);
@@ -70,6 +75,19 @@ public class InventoryController : MonoBehaviour
             // 왼쪽 클릭을 했을때 작동
             LeftMouseButtonPress();
         }
+    }
+
+    private void InsertRandomItem()
+    {
+        CreateRandomItem();
+        InventoryItem itemToInsert = selectedItem;
+        selectedItem = null;
+        InsertItem(itemToInsert);
+    }
+
+    private void InsertItem(InventoryItem itemToInsert)
+    {
+        Vector2Int posOnGrid = selectedItemGrid.FindSpaceForObject(itemToInsert);
     }
 
     private void CreateRandomItem()
