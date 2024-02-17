@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-[RequireComponent(typeof(ItemGrid))]
-public class GridInteract : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+[RequireComponent(typeof(Inventory))]
+public class InventoryInteract : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     #region 변수
     private InventoryController inventoryController;
-    private ItemGrid itemGrid;
+    private Inventory itemGrid;
     #endregion // 변수
 
     #region 함수 
@@ -16,19 +16,22 @@ public class GridInteract : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     private void Awake()
     {
         inventoryController = FindObjectOfType(typeof(InventoryController)) as InventoryController;
-        itemGrid = GetComponent<ItemGrid>();
+        itemGrid = GetComponent<Inventory>();
+
+        Debug.Log(" 인벤토리 참조 ");
+        //inventoryController.SelectedInventory = itemGrid;
     }
 
     /** 마우스 커서가 충돌 영역 안으로 들어 올때 */
     public void OnPointerEnter(PointerEventData eventData)
     {
-        inventoryController.SelectedItemGrid = itemGrid;   
+        inventoryController.SelectedInventory = itemGrid;   
     }
 
     /** 마우스 커서가 충돌 영역 밖으로 나갈 때 */
     public void OnPointerExit(PointerEventData eventData)
     {
-        inventoryController.SelectedItemGrid = null;
+        inventoryController.SelectedInventory = null;
     }
     #endregion // 함수
 }

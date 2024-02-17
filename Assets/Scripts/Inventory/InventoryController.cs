@@ -12,7 +12,10 @@ public class InventoryController : MonoBehaviour
     [SerializeField] private GameObject itemPrefab;
     [SerializeField] private Transform canvasTransform;
 
-    private ItemGrid selectedItemGrid; // 아이템 인벤토리 변수
+    [Header("=====> 입력 키 <=====")]
+    [SerializeField] private KeyCode rotateItemKeyCode = KeyCode.R;
+
+    private Inventory selectedInventory; // 아이템 인벤토리 변수
     private InventoryItem selectedItem;
     private InventoryItem overlapItem;
     private RectTransform selectedItemRectTransform;
@@ -22,12 +25,12 @@ public class InventoryController : MonoBehaviour
     #endregion // 변수
 
     #region 프로퍼티
-    public ItemGrid SelectedItemGrid
+    public Inventory SelectedInventory
     {
-        get => selectedItemGrid;
+        get => selectedInventory;
         set
         {
-            selectedItemGrid = value;
+            selectedInventory = value;
             inventoryHighlight.SetParent(value);
         }
     }
@@ -46,6 +49,58 @@ public class InventoryController : MonoBehaviour
         // 아이템 아이콘 드래그
         ItemIconDrag();
 
+        // 입력 키
+        InputKey();
+
+        // 인벤토리 아이템 하이라이트
+        InventoryHighlight();
+
+        // 마우스 왼쪽 클릭을 했을경우
+        if (Input.GetMouseButtonDown(0))
+        {
+            // 왼쪽 클릭을 했을때 작동
+            LeftMouseButtonPress();
+        }
+    } 
+
+    /** 인벤토리에 아이템을 추가한다 */
+    public void AddItem(ItemData itemdata)
+    {
+        // 인벤토리가 없을 경우
+        if(selectedInventory == null)
+        {
+            Debug.Log(" 인벤토리가 없습니다 ");
+            return;
+        }
+
+        // 인벤토리 아이템 생성
+        CreateRandomItem(itemdata);
+
+        InventoryItem addItem = selectedItem;
+        selectedItem = null;
+
+        // 인벤토리에 아이템 추가
+        InsertItem(addItem);
+    }
+
+    /** 인벤토리에 추가할 아이템을 생성한다 */
+    private void CreateRandomItem(ItemData itemdata = null)
+    {
+        InventoryItem inventoryItem = Instantiate(itemPrefab).GetComponent<InventoryItem>();
+        selectedItem = inventoryItem;
+
+        selectedItemRectTransform = inventoryItem.GetComponent<RectTransform>();
+        selectedItemRectTransform.SetParent(canvasTransform);
+        selectedItemRectTransform.SetAsLastSibling();
+
+        int selectedItemID = UnityEngine.Random.Range(0, items.Count);
+        inventoryItem.Set(items[selectedItemID]);
+        //inventoryItem.Set(itemdata);
+    }
+
+    /** 입력 키 */
+    private void InputKey()
+    {
         // Q를 눌렀을 경우
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -53,13 +108,25 @@ public class InventoryController : MonoBehaviour
             CreateRandomItem();
         }
 
-        if(Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.W))
         {
+            // 인벤토리에 아이템 추가
             InsertRandomItem();
         }
 
+        // 아이템 회전 키
+        if (Input.GetKeyDown(rotateItemKeyCode))
+        {
+            // 아이템 회전
+            RotateItem();
+        }
+    }
+    
+    /** 인벤토리 아이템 하이라이트 */
+    private void InventoryHighlight()
+    {
         // 인벤토리가 없을 경우
-        if (selectedItemGrid == null)
+        if (selectedInventory == null)
         {
             // 아이템 강조표시 비활성화
             inventoryHighlight.Show(false);
@@ -68,38 +135,37 @@ public class InventoryController : MonoBehaviour
 
         // 아이템 강조 표시 동작
         HandleHighlight();
-
-        // 마우스 왼쪽 클릭을 했을경우
-        if (Input.GetMouseButtonDown(0))
-        {
-            // 왼쪽 클릭을 했을때 작동
-            LeftMouseButtonPress();
-        }
     }
 
     private void InsertRandomItem()
     {
-        CreateRandomItem();
+        // 선택된 인벤토리가 없다면 종료
+        if (selectedInventory == null) { return; }
+
+        // 선택 아이템 랜덤 생성
+        //CreateRandomItem();
+
+        // 생성된 선택 아이템 저장
         InventoryItem itemToInsert = selectedItem;
+
+        // 선택 아이템 초기화
         selectedItem = null;
+
+        // 인벤토리에 아이템 추가
         InsertItem(itemToInsert);
     }
 
+    /** 인벤토리에 아이템을 추가한다 */
     private void InsertItem(InventoryItem itemToInsert)
     {
-        Vector2Int posOnGrid = selectedItemGrid.FindSpaceForObject(itemToInsert);
-    }
+        // 인벤토리에 아이템이 들어갈 위치를 반환한다
+        Vector2Int? posOnGrid = selectedInventory.FindSpaceForObject(itemToInsert);
 
-    private void CreateRandomItem()
-    {
-        InventoryItem inventoryItem = Instantiate(itemPrefab).GetComponent<InventoryItem>();
-        selectedItem = inventoryItem;
+        // 아이템이 들어갈 위치가 없을 경우 종료
+        if(posOnGrid == null) { return; }
 
-        selectedItemRectTransform = inventoryItem.GetComponent<RectTransform>();
-        selectedItemRectTransform.SetParent(canvasTransform);
-
-        int selectedItemID = UnityEngine.Random.Range(0, items.Count);
-        inventoryItem.Set(items[selectedItemID]);
+        // 선택된 인벤토리에 들어갈 위치에 아이템 배치
+        selectedInventory.PlaceItem(itemToInsert, posOnGrid.Value.x, posOnGrid.Value.y);
     }
 
     /** 아이템 강조 표시를 동작한다 */
@@ -118,7 +184,7 @@ public class InventoryController : MonoBehaviour
         if (selectedItem == null)
         {
             // 아이템 인벤토리에서 입력한 좌표에 있는 아이템을 가져온다
-            itemToHighlight = selectedItemGrid.GetItem(positionOnGrid.x, positionOnGrid.y);
+            itemToHighlight = selectedInventory.GetItem(positionOnGrid.x, positionOnGrid.y);
 
             // 인벤토리에서 아이템을 찾았다면
             if(itemToHighlight != null)
@@ -128,7 +194,7 @@ public class InventoryController : MonoBehaviour
                 // 강조의 크기를 설정한다
                 inventoryHighlight.SetSize(itemToHighlight);
                 // 강조의 위치를 설정한다
-                inventoryHighlight.SetPosition(selectedItemGrid, itemToHighlight);
+                inventoryHighlight.SetPosition(selectedInventory, itemToHighlight);
             }
             // 아이템을 못 찾았다면
             else
@@ -141,13 +207,16 @@ public class InventoryController : MonoBehaviour
         else
         {
             // 현재 위치에 아이템을 배치할 수 있는지 여부에 따라 인벤토리 강조를 표시한다
-            inventoryHighlight.Show(selectedItemGrid.BoundryCheck(positionOnGrid.x, positionOnGrid.y,
-                    selectedItem.itemData.width, selectedItem.itemData.heigth));
+            inventoryHighlight.Show(selectedInventory.BoundryCheck(
+                positionOnGrid.x,
+                positionOnGrid.y,
+                selectedItem.Width,
+                selectedItem.Height));
 
             // 강조의 크기를 설정한다
             inventoryHighlight.SetSize(selectedItem);
             // 강조의 크기를 설정한다
-            inventoryHighlight.SetPosition(selectedItemGrid, selectedItem, positionOnGrid.x, positionOnGrid.y);
+            inventoryHighlight.SetPosition(selectedInventory, selectedItem, positionOnGrid.x, positionOnGrid.y);
         }
     }
 
@@ -165,6 +234,8 @@ public class InventoryController : MonoBehaviour
     /** 왼쪽 마우스 버튼을 눌렀을 경우*/
     private void LeftMouseButtonPress()
     {
+        if(selectedInventory == null) { return; }
+
         // 마우스 위치에 따라 타일 좌표를 가져온다
         Vector2Int tileGridPosition = GetTileGridPosition();
 
@@ -192,19 +263,19 @@ public class InventoryController : MonoBehaviour
         if (selectedItem != null)
         {
             // 마우스 위치를 아이템의 중심으로 변경
-            position.x -= (selectedItem.itemData.width - 1) * ItemGrid.tileSizeWidth / 2;
-            position.y += (selectedItem.itemData.heigth - 1) * ItemGrid.tileSizeHeight / 2;
+            position.x -= (selectedItem.Width - 1) * Inventory.tileSizeWidth / 2;
+            position.y += (selectedItem.Height - 1) * Inventory.tileSizeHeight / 2;
         }
 
         // 타일 좌표를 가져온다
-        return selectedItemGrid.GetTileGridPosition(position);
+        return selectedInventory.GetTileGridPosition(position);
     }
 
     /** 아이템을 선택한다 */
     private void PickUpItem(Vector2Int tileGridPosition)
     {
         // 좌표에 있는 아이템을 선택한다
-        selectedItem = selectedItemGrid.PickUpItem(tileGridPosition.x, tileGridPosition.y);
+        selectedItem = selectedInventory.PickUpItem(tileGridPosition.x, tileGridPosition.y);
 
         // 선택한 아이템이 있을경우
         if (selectedItem != null)
@@ -217,7 +288,7 @@ public class InventoryController : MonoBehaviour
     private void PlaceItem(Vector2Int tileGridPosition)
     {
         // 가져온 좌표에 선택된 아이템을 배치한다
-        bool complete = selectedItemGrid.PlaceItem(selectedItem, tileGridPosition.x, tileGridPosition.y, ref overlapItem);
+        bool complete = selectedInventory.PlaceItem(selectedItem, tileGridPosition.x, tileGridPosition.y, ref overlapItem);
 
         // 아이템 배치에 성공했을 경우
         if (complete)
@@ -233,8 +304,17 @@ public class InventoryController : MonoBehaviour
                 // 오버랩 아이템 초기화
                 overlapItem = null;
                 selectedItemRectTransform = selectedItem.GetComponent<RectTransform>();
+                selectedItemRectTransform.SetAsLastSibling();
             }
         }
     }
-    #endregion // 함수
+
+    /** 아이템을 회전 시킨다 */
+    private void RotateItem()
+    {
+        if(selectedItem == null) { return; }
+
+        selectedItem.Rotate();
+    }
+#endregion // 함수
 }

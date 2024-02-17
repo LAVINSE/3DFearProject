@@ -40,11 +40,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField, Tooltip(" 보정 값 ")] private float correctPlayerJumpHeight;
     [SerializeField, Tooltip(" 바닥 레이어 ")] private LayerMask groundLayer;
 
-    [Header("=====> 키 입력 <=====")]
-    [SerializeField, Tooltip(" 점프 키 ")] private KeyCode jumpKey = KeyCode.Space;
-    [SerializeField, Tooltip(" 달리기 키 ")] private KeyCode sprintKey = KeyCode.LeftShift;
-    [SerializeField, Tooltip(" 웅크리기 키 ")] private KeyCode crouchKey = KeyCode.LeftControl;
-
     [Header("=====> 인스펙터 값 확인 <=====")]
     [SerializeField] private float airMultiplier;
     [SerializeField] private float moveSpeed;
@@ -59,13 +54,16 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 moveDirection;
 
     private Rigidbody rigid;
+
+    private PlayerKeyCode playerKeyCode;
     #endregion // 변수
 
     #region 함수
     /** 초기화 */
     private void Awake()
     {
-        rigid = GetComponent<Rigidbody>();   
+        rigid = this.GetComponent<Rigidbody>();
+        playerKeyCode = this.GetComponent<PlayerKeyCode>();
     }
 
     /** 초기화 */
@@ -111,7 +109,7 @@ public class PlayerMovement : MonoBehaviour
         verticalInput = Input.GetAxisRaw("Vertical");
         
         // 점프
-        if(Input.GetKey(jumpKey) && isJump && isGround)
+        if(Input.GetKey(playerKeyCode.JumpKey) && isJump && isGround)
         {
             isJump = false;
 
@@ -123,14 +121,14 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // 웅크리기 시작
-        if (Input.GetKeyDown(crouchKey))
+        if (Input.GetKeyDown(playerKeyCode.CrouchKey))
         {
             this.transform.localScale = new Vector3(this.transform.localScale.x, crouchScaleY, this.transform.localScale.z);
             rigid.AddForce(Vector3.down * 5f, ForceMode.Impulse);
         }
 
         // 웅크리기 해제
-        if (Input.GetKeyUp(crouchKey))
+        if (Input.GetKeyUp(playerKeyCode.CrouchKey))
         {
             this.transform.localScale = new Vector3(this.transform.localScale.x, crouchStartScaleY, this.transform.localScale.z);
         }
@@ -140,14 +138,14 @@ public class PlayerMovement : MonoBehaviour
     private void MovementStateHandler()
     {
         // 웅크리기
-        if (Input.GetKey(crouchKey))
+        if (Input.GetKey(playerKeyCode.CrouchKey))
         {
             movementState = MovementState.crouch;
             moveSpeed = crouchSpeed;
         }
 
         // 달리기
-        if(isGround && Input.GetKey(sprintKey))
+        if(isGround && Input.GetKey(playerKeyCode.SprintKey))
         {
 
             movementState = MovementState.sprint;
