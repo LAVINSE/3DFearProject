@@ -6,7 +6,6 @@ public class PlayerState : MonoBehaviour
 {
     public enum EPlayerStateType
     {
-        None,
         Movement,
         Inventory,
     }
@@ -26,7 +25,6 @@ public class PlayerState : MonoBehaviour
 
         stateArray = new BaseState[10];
 
-        stateArray[(int)EPlayerStateType.None] = new PlayerNoneState(this, playerKeyCode);
         stateArray[(int)EPlayerStateType.Movement] = new PlayerMovementState(this, playerKeyCode);
     }
 

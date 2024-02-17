@@ -5,10 +5,20 @@ using UnityEngine;
 public class InventoryHighlight : MonoBehaviour
 {
     #region 변수
-    [SerializeField] private RectTransform highlighter;
+    [SerializeField] private GameObject highlighterPrefab;
+
+    private RectTransform highlighter;
     #endregion // 변수
 
     #region 함수
+    /** 초기화 */
+    private void Awake()
+    {
+        GameObject highlighterObject = Instantiate(highlighterPrefab);
+        highlighter = highlighterObject.GetComponent<RectTransform>();
+        highlighterObject.SetActive(false);
+    }
+
     /** 하이라이트 이미지를 활성화/비활성화 한다 */
     public void Show(bool isShow)
     {

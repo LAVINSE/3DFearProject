@@ -9,18 +9,20 @@ public class InventoryController : MonoBehaviour
 {
     #region 변수
     [SerializeField] private List<ItemData> items;
-    [SerializeField] private GameObject itemPrefab;
-    [SerializeField] private Transform canvasTransform;
+    [SerializeField] private GameObject itemPrefab; 
 
     [Header("=====> 입력 키 <=====")]
     [SerializeField] private KeyCode rotateItemKeyCode = KeyCode.R;
 
+    private Transform canvasTransform;
+    private RectTransform selectedItemRectTransform;
+
     private Inventory selectedInventory; // 아이템 인벤토리 변수
     private InventoryItem selectedItem;
     private InventoryItem overlapItem;
-    private RectTransform selectedItemRectTransform;
-    private InventoryHighlight inventoryHighlight;
     private InventoryItem itemToHighlight;
+    private InventoryHighlight inventoryHighlight;
+    
     private Vector2Int oldPosition;
     #endregion // 변수
 
@@ -41,6 +43,7 @@ public class InventoryController : MonoBehaviour
     private void Awake()
     {
         inventoryHighlight = this.GetComponent<InventoryHighlight>();
+        //canvasTransform = GameObject.FindWithTag("Canvas").transform;
     }
 
     /** 초기화 => 상태를 갱신한다 */
