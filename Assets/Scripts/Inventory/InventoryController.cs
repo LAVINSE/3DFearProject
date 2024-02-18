@@ -11,12 +11,10 @@ public class InventoryController : MonoBehaviour
     [SerializeField] private List<ItemData> items;
     [SerializeField] private GameObject itemPrefab; 
 
-    [Header("=====> 입력 키 <=====")]
-    [SerializeField] private KeyCode rotateItemKeyCode = KeyCode.R;
-
     private Transform canvasTransform;
     private RectTransform selectedItemRectTransform;
 
+    private PlayerKeyCode playerKeyCode;
     private Inventory selectedInventory; // 아이템 인벤토리 변수
     private InventoryItem selectedItem;
     private InventoryItem overlapItem;
@@ -42,8 +40,9 @@ public class InventoryController : MonoBehaviour
     /** 초기화 */
     private void Awake()
     {
+        playerKeyCode = this.GetComponentInParent<PlayerKeyCode>();
         inventoryHighlight = this.GetComponent<InventoryHighlight>();
-        //canvasTransform = GameObject.FindWithTag("Canvas").transform;
+        canvasTransform = GameObject.FindWithTag("Canvas").transform;
     }
 
     /** 초기화 => 상태를 갱신한다 */
@@ -86,6 +85,30 @@ public class InventoryController : MonoBehaviour
         InsertItem(addItem);
     }
 
+    /** 입력 키 */
+    private void InputKey()
+    {
+        // Q를 눌렀을 경우
+        if (Input.GetKeyDown(playerKeyCode.testCreateItemKey))
+        {
+            // 아이템 생성
+            CreateRandomItem();
+        }
+
+        if (Input.GetKeyDown(playerKeyCode.testAddItemKey))
+        {
+            // 인벤토리에 아이템 추가
+            InsertRandomItem();
+        }
+
+        // 아이템 회전 키
+        if (Input.GetKeyDown(playerKeyCode.RotateItemKeyCode))
+        {
+            // 아이템 회전
+            RotateItem();
+        }
+    }
+
     /** 인벤토리에 추가할 아이템을 생성한다 */
     private void CreateRandomItem(ItemData itemdata = null)
     {
@@ -96,57 +119,20 @@ public class InventoryController : MonoBehaviour
         selectedItemRectTransform.SetParent(canvasTransform);
         selectedItemRectTransform.SetAsLastSibling();
 
+        // TODO : 수정해야됨
         int selectedItemID = UnityEngine.Random.Range(0, items.Count);
         inventoryItem.Set(items[selectedItemID]);
         //inventoryItem.Set(itemdata);
     }
 
-    /** 입력 키 */
-    private void InputKey()
-    {
-        // Q를 눌렀을 경우
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            // 아이템 생성
-            CreateRandomItem();
-        }
-
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            // 인벤토리에 아이템 추가
-            InsertRandomItem();
-        }
-
-        // 아이템 회전 키
-        if (Input.GetKeyDown(rotateItemKeyCode))
-        {
-            // 아이템 회전
-            RotateItem();
-        }
-    }
-    
-    /** 인벤토리 아이템 하이라이트 */
-    private void InventoryHighlight()
-    {
-        // 인벤토리가 없을 경우
-        if (selectedInventory == null)
-        {
-            // 아이템 강조표시 비활성화
-            inventoryHighlight.Show(false);
-            return;
-        }
-
-        // 아이템 강조 표시 동작
-        HandleHighlight();
-    }
-
+    /** 인벤토리에 아이템을 추가하고, 선택된 아이템을 초기화 한다 */
     private void InsertRandomItem()
     {
         // 선택된 인벤토리가 없다면 종료
         if (selectedInventory == null) { return; }
 
         // 선택 아이템 랜덤 생성
-        //CreateRandomItem();
+        CreateRandomItem();
 
         // 생성된 선택 아이템 저장
         InventoryItem itemToInsert = selectedItem;
@@ -165,10 +151,25 @@ public class InventoryController : MonoBehaviour
         Vector2Int? posOnGrid = selectedInventory.FindSpaceForObject(itemToInsert);
 
         // 아이템이 들어갈 위치가 없을 경우 종료
-        if(posOnGrid == null) { return; }
+        if (posOnGrid == null) { return; }
 
         // 선택된 인벤토리에 들어갈 위치에 아이템 배치
         selectedInventory.PlaceItem(itemToInsert, posOnGrid.Value.x, posOnGrid.Value.y);
+    }
+
+    /** 인벤토리 아이템 하이라이트 */
+    private void InventoryHighlight()
+    {
+        // 인벤토리가 없을 경우
+        if (selectedInventory == null)
+        {
+            // 아이템 강조표시 비활성화
+            inventoryHighlight.Show(false);
+            return;
+        }
+
+        // 아이템 강조 표시 동작
+        HandleHighlight();
     }
 
     /** 아이템 강조 표시를 동작한다 */

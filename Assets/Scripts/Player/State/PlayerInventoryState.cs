@@ -2,39 +2,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovementState : BaseState
+public class PlayerInventoryState : BaseState
 {
     #region 변수
     private PlayerState playerState;
-    private PlayerKeyCode playerKeyCode;
+    private PlayerAction playerAction;
     #endregion // 변수
 
     #region 생성자
-    public PlayerMovementState(PlayerState playerState, PlayerKeyCode playerKeyCode)
-    {
+    public PlayerInventoryState(PlayerState playerState, PlayerAction playerAction) 
+    { 
         this.playerState = playerState;
-        this.playerKeyCode = playerKeyCode;
+        this.playerAction = playerAction;
     }
     #endregion // 생성자
 
-    /** 상태 시작 */
     public override void StateEnter()
     {
-
+        
     }
 
-    /** 상태 종료 */
     public override void StateExit()
     {
         
     }
 
-    /** 상태 업데이트 */
     public override void StateUpdate()
     {
-        if (Input.GetKeyDown(playerKeyCode.InventoryKey))
+        if(playerAction.InventoryObj.activeSelf == false)
         {
-            playerState.ChangeState(PlayerState.EPlayerStateType.Inventory);
+            playerState.ChangeState(PlayerState.EPlayerStateType.Movement);
         }
     }
 }

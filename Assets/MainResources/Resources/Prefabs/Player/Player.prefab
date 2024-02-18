@@ -51,7 +51,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1c47ecc331f25504db5c7aad373b533d, type: 2}
   itemPrefab: {fileID: 764537635422680759, guid: d9af2e85ba4f1dc40bde319e9c6aed52,
     type: 3}
-  rotateItemKeyCode: 114
 --- !u!114 &5439124465294061507
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -207,6 +206,7 @@ GameObject:
   - component: {fileID: 3368688977186770049}
   - component: {fileID: 3212360849612401866}
   - component: {fileID: -1401307299238517347}
+  - component: {fileID: 7502819775918711960}
   - component: {fileID: 3368688977186770050}
   m_Layer: 0
   m_Name: Player
@@ -265,7 +265,10 @@ MonoBehaviour:
   JumpKey: 32
   SprintKey: 304
   CrouchKey: 306
+  InventoryKey: 105
   RotateItemKeyCode: 114
+  testCreateItemKey: 113
+  testAddItemKey: 119
 --- !u!114 &-1401307299238517347
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -278,6 +281,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 489244b4daa961b408cb32687de5053f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7502819775918711960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3368688977186770063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b6cbeeab279a3c43890ee1c94ff8e82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inventoryPrefab: {fileID: 318995506805112045, guid: 4763c50f3fd84d641b7d7b56493d4a69,
+    type: 3}
 --- !u!114 &3368688977186770050
 MonoBehaviour:
   m_ObjectHideFlags: 0

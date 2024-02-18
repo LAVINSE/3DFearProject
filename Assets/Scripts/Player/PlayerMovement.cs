@@ -56,6 +56,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody rigid;
 
     private PlayerKeyCode playerKeyCode;
+    private PlayerState playerState;
     #endregion // 변수
 
     #region 함수
@@ -64,6 +65,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rigid = this.GetComponent<Rigidbody>();
         playerKeyCode = this.GetComponent<PlayerKeyCode>();
+        playerState = this.GetComponent<PlayerState>();
     }
 
     /** 초기화 */
@@ -81,6 +83,8 @@ public class PlayerMovement : MonoBehaviour
     /** 초기화 => 상태를 갱신한다 */
     private void Update()
     {
+        if (playerState.currentState != playerState.stateArray[(int)PlayerState.EPlayerStateType.Movement]) { return; }
+
         // 오브젝트의 높이 절반 + 보정값
         isGround = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + correctPlayerJumpHeight, groundLayer);
 
@@ -97,6 +101,8 @@ public class PlayerMovement : MonoBehaviour
     /** 초기화 => 상태를 갱신한다 */
     private void FixedUpdate()
     {
+        if (playerState.currentState != playerState.stateArray[(int)PlayerState.EPlayerStateType.Movement]) { return; }
+
         // 플레이어 이동
         PlayerMove();
     }

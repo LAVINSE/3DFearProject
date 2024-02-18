@@ -15,6 +15,7 @@ public class PlayerState : MonoBehaviour
     public BaseState currentState;
 
     private PlayerKeyCode playerKeyCode;
+    private PlayerAction playerAction;
     #endregion // 변수
 
     #region 함수
@@ -22,10 +23,12 @@ public class PlayerState : MonoBehaviour
     private void Awake()
     {
         playerKeyCode = this.GetComponent<PlayerKeyCode>();
+        playerAction = this.GetComponent<PlayerAction>();
 
         stateArray = new BaseState[10];
 
         stateArray[(int)EPlayerStateType.Movement] = new PlayerMovementState(this, playerKeyCode);
+        stateArray[(int)EPlayerStateType.Inventory] = new PlayerInventoryState(this, playerAction);
     }
 
     /** 초기화 */

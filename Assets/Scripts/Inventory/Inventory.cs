@@ -24,9 +24,15 @@ public class Inventory : MonoBehaviour
 
     #region 함수
     /** 초기화 */
-    private void Start()
+    private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
+    }
+
+    /** 초기화 */
+    private void Start()
+    {
+        // 인벤토리 설정
         Init(gridSizeWidth, gridSizeHeight);
     }
 
