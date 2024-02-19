@@ -5,13 +5,16 @@ using UnityEngine;
 public class PlayerAction : MonoBehaviour
 {
     #region 변수
-    [SerializeField] private GameObject inventoryPrefab;
+    [SerializeField] private GameObject inventoryUIPrefab;
 
     private PlayerKeyCode playerKeyCode;
 
-    public GameObject InventoryObj;
     private Transform canvasTransform;
     #endregion // 변수
+
+    #region 프로퍼티
+    public GameObject InventoryObj { get; set; }
+    #endregion // 프로퍼티
 
     #region 함수
     /** 초기화 */
@@ -36,8 +39,9 @@ public class PlayerAction : MonoBehaviour
         {
             if (InventoryObj == null)
             {
-                InventoryObj = Instantiate(inventoryPrefab);
+                InventoryObj = Instantiate(inventoryUIPrefab);
                 InventoryObj.GetComponent<RectTransform>().SetParent(canvasTransform);
+                InventoryObj.transform.localPosition = Vector3.zero;
             }
             else
             {

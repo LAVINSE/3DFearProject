@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     // 이동 상태
     private enum MovementState
     {
+        None,
         walk,
         sprint,
         crouch,
@@ -40,13 +41,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField, Tooltip(" 보정 값 ")] private float correctPlayerJumpHeight;
     [SerializeField, Tooltip(" 바닥 레이어 ")] private LayerMask groundLayer;
 
-    [Header("=====> 인스펙터 값 확인 <=====")]
-    [SerializeField] private float airMultiplier;
-    [SerializeField] private float moveSpeed;
-
     private bool isJump;
     private bool isGround;
 
+    private float airMultiplier = 0;
+    [SerializeField] private float moveSpeed = 0;
     private float horizontalInput;
     private float verticalInput;
 
@@ -137,6 +136,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyUp(playerKeyCode.CrouchKey))
         {
             this.transform.localScale = new Vector3(this.transform.localScale.x, crouchStartScaleY, this.transform.localScale.z);
+            movementState = MovementState.None;
         }
     }
 
@@ -158,7 +158,7 @@ public class PlayerMovement : MonoBehaviour
             moveSpeed = sprintSpeed;
         }
         // 걷기
-        else if (isGround)
+        else if (isGround && movementState != MovementState.crouch)
         {
             movementState = MovementState.walk;
             moveSpeed = walkSpeed;

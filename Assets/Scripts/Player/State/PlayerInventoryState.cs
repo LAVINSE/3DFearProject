@@ -17,16 +17,19 @@ public class PlayerInventoryState : BaseState
     }
     #endregion // 생성자
 
+    /** 상태 시작 */
     public override void StateEnter()
     {
-        
+        PlayerCamera.isRotateCamera = false;
     }
 
+    /** 상태 종료 */
     public override void StateExit()
     {
-        
+        PlayerCamera.isRotateCamera = true;
     }
 
+    /** 상태 업데이트 */
     public override void StateUpdate()
     {
         if(playerAction.InventoryObj.activeSelf == false)

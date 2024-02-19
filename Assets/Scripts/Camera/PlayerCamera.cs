@@ -16,10 +16,16 @@ public class PlayerCamera : MonoBehaviour
     private float yRotation;
     #endregion // 변수
 
+    #region 프로퍼티
+    public static bool isRotateCamera = true;
+    #endregion // 프로퍼티
+
     #region 함수
     /** 초기화 => 상태를 갱신한다 */
     private void Update()
     {
+        if(isRotateCamera == false) { return; }
+
         // 마우스 수평/수직
         float mouseX = Input.GetAxisRaw("Mouse X") * mouseSensitivityX;
         float mouseY = Input.GetAxisRaw("Mouse Y") * mouseSensitivityY;
