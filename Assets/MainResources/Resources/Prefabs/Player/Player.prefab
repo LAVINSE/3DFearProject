@@ -293,8 +293,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b6cbeeab279a3c43890ee1c94ff8e82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventoryPrefab: {fileID: 318995506805112045, guid: 4763c50f3fd84d641b7d7b56493d4a69,
+  inventoryUIPrefab: {fileID: 318995506805112045, guid: 4763c50f3fd84d641b7d7b56493d4a69,
     type: 3}
+  orientation: {fileID: 3368688977216977513}
+  pickItemRange: 3
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  actionText: {fileID: 0}
 --- !u!114 &3368688977186770050
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -326,7 +332,6 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  airMultiplier: 0
   moveSpeed: 5
 --- !u!1 &3368688977216977513
 GameObject:

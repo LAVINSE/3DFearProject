@@ -8,6 +8,10 @@ public class Item : MonoBehaviour
     [SerializeField] private ItemData itemdata;
     #endregion // 변수
 
+    #region 프로퍼티
+    public ItemData ItemData { get => itemdata; }
+    #endregion // 프로퍼티
+
     #region 함수
     #endregion // 함수
 }
