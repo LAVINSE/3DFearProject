@@ -108,6 +108,7 @@ public class PlayerAction : MonoBehaviour
         }
     }
 
+    /** 인벤토리 활성화/비활성화 한다 */
     private void InventoryActive(bool isActive)
     {
         InventoryObj.SetActive(!isActive);

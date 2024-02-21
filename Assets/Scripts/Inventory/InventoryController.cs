@@ -9,7 +9,7 @@ public class InventoryController : MonoBehaviour
 {
     #region 변수
     [SerializeField] private List<ItemData> items;
-    [SerializeField] private GameObject itemPrefab; 
+    [SerializeField] private GameObject itemPrefab;
 
     private Transform canvasTransform;
     private RectTransform selectedItemRectTransform;
@@ -63,7 +63,7 @@ public class InventoryController : MonoBehaviour
             // 왼쪽 클릭을 했을때 작동
             LeftMouseButtonPress();
         }
-    } 
+    }
 
     /** 인벤토리에 아이템을 추가한다 */
     public void AddItem(ItemData itemdata)

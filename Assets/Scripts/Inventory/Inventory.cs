@@ -27,11 +27,7 @@ public class Inventory : MonoBehaviour
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
-    }
 
-    /** 초기화 */
-    private void Start()
-    {
         // 인벤토리 설정
         Init(gridSizeWidth, gridSizeHeight);
     }
@@ -59,7 +55,7 @@ public class Inventory : MonoBehaviour
         return tileGridPosition;
     }
 
-    /** 아이템을 특정 좌표에 배치한다 (마우스로 배치할때) */
+    /** 아이템을 특정 좌표에 배치한다 (인벤토리로 들어가기 전 검사) */
     public bool PlaceItem(InventoryItem inventoryItem, int posX, int posY, ref InventoryItem overlapItem)
     {
         // 아이템을 배치할 위치가 유효한지 검사한다
@@ -91,7 +87,7 @@ public class Inventory : MonoBehaviour
         return true;
     }
 
-    /** 아이템을 특정 좌표에 배치한다 (마우스 사용 X, 인벤토리에 배치될때) */
+    /** 아이템을 특정 좌표에 배치한다 (바로 인벤토리에 배치) */
     public void PlaceItem(InventoryItem inventoryItem, int posX, int posY)
     {
         // 아이템 RectTransform 가져오기
