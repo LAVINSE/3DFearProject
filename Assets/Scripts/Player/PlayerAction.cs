@@ -10,7 +10,7 @@ public class PlayerAction : MonoBehaviour
     #region 변수
     [SerializeField] private GameObject inventoryUIPrefab;
     [SerializeField] private GameObject orientation; // 플레이어 방향
-    [SerializeField] private float pickItemRange; // 아이템 습득 가능한 최대 거리
+    [SerializeField] private float itemPickRange = 2f; // 아이템 습득 가능한 최대 거리
     [SerializeField] private LayerMask layerMask; // 아이템 레이어
     [SerializeField] private TMP_Text actionText; // 아이템 줍는 액션 텍스트
 
@@ -18,7 +18,7 @@ public class PlayerAction : MonoBehaviour
 
     private PlayerKeyCode playerKeyCode;
 
-    private RaycastHit hitInfo; // 충돌체 정보 저장
+    private RaycastHit itemhitInfo; // 충돌체 정보 저장
     private Transform canvasTransform;
     #endregion // 변수
 
@@ -30,7 +30,7 @@ public class PlayerAction : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawRay(orientation.transform.position, orientation.transform.TransformDirection(Vector3.forward) * pickItemRange);
+        Gizmos.DrawRay(orientation.transform.position, orientation.transform.TransformDirection(Vector3.forward) * itemPickRange);
     }
     /** 초기화 */
     private void Awake()
@@ -46,66 +46,73 @@ public class PlayerAction : MonoBehaviour
         // 입력처리
         PlayerActionInput();
 
-        CheckItem();
-        TryAction();
-    }
-
-    private void TryAction()
-    {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            CheckItem();
-
-        }
-    }
-
-    private void CheckItem()
-    {
-        if (Physics.Raycast(orientation.transform.position, this.orientation.transform.TransformDirection(Vector3.forward),
-            out hitInfo, pickItemRange, layerMask))
-        {
-            if (hitInfo.transform.CompareTag("Item"))
-            {
-                ItemInfoAppear();
-            }
-        }
-        else
-        {
-            InfoDisappear();
-        }
-    }
-
-    private void InfoDisappear()
-    {
-        pickupActivated = false;
-        actionText.gameObject.SetActive(false);
-    }
-
-    private void ItemInfoAppear()
-    {
-        pickupActivated = true;
-
-        actionText.gameObject.SetActive(true);
-
-        actionText.text = hitInfo.transform.GetComponent<Item>().ItemData.itemName + "획득하기";
+        // 아이템을 획득할 수 있는지 레이로 확인한다
+        CheckItemPickRayCast();
     }
 
     /** 입력처리 */
     private void PlayerActionInput()
     {
+        // 인벤토리 키
         if (Input.GetKeyDown(playerKeyCode.InventoryKey))
         {
             if (InventoryObj == null)
             {
+                // 인벤토리 생성
                 InventoryObj = Instantiate(inventoryUIPrefab);
                 InventoryObj.GetComponent<RectTransform>().SetParent(canvasTransform);
                 InventoryObj.transform.localPosition = Vector3.zero;
             }
             else
             {
+
+                // 인벤토리 활성화/비활성화
                 InventoryActive(InventoryObj.activeSelf);
             }
         }
+
+        // 아이템을 획득 키
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            CheckItemPickRayCast();
+        }
+    }
+
+    /** 아이템을 획득할 수 있는지 레이로 확인한다 */
+    private void CheckItemPickRayCast()
+    {
+        // 플레이어 현재 바라보고 있는 방향, 줍기 거리, 아이템 레이어가 맞는지 검사하고, hitInfo에 저장한다
+        if (Physics.Raycast(orientation.transform.position, this.orientation.transform.TransformDirection(Vector3.forward),
+            out itemhitInfo, itemPickRange, layerMask))
+        {
+            // 아이템일 경우
+            if (itemhitInfo.transform.CompareTag("Item"))
+            {
+                // 아이템 획득 텍스트를 보여준다
+                ShowItemPickText();
+            }
+        }
+        else
+        {
+            // 아이템 획득 텍스트를 숨긴다
+            HideItemPickText();
+        }
+    }
+
+    /** 아이템 획득 텍스트를 보여준다 */
+    private void ShowItemPickText()
+    {
+        pickupActivated = true;
+        actionText.gameObject.SetActive(true);
+
+        actionText.text = itemhitInfo.transform.GetComponent<Item>().ItemData.itemName + "획득하기";
+    }
+
+    /** 아이템 획득 텍스트를 숨긴다 */
+    private void HideItemPickText()
+    {
+        pickupActivated = false;
+        actionText.gameObject.SetActive(false);
     }
 
     /** 인벤토리 활성화/비활성화 한다 */
