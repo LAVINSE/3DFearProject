@@ -92,16 +92,17 @@ public class InventoryController : MonoBehaviour
         if (Input.GetKeyDown(playerKeyCode.testCreateItemKey))
         {
             // 아이템 생성
-            CreateRandomItem();
+            //CreateRandomItem();
         }
 
+        // w를 눌렀을 경우
         if (Input.GetKeyDown(playerKeyCode.testAddItemKey))
         {
             // 인벤토리에 아이템 추가
-            InsertRandomItem();
+            //InsertRandomItem();
         }
 
-        // 아이템 회전 키
+        // 아이템 회전 키 R
         if (Input.GetKeyDown(playerKeyCode.RotateItemKeyCode))
         {
             // 아이템 회전
@@ -110,7 +111,7 @@ public class InventoryController : MonoBehaviour
     }
 
     /** 인벤토리에 추가할 아이템을 생성한다 */
-    private void CreateRandomItem(ItemData itemdata = null)
+    private void CreateRandomItem(ItemData itemdata)
     {
         InventoryItem inventoryItem = Instantiate(itemPrefab).GetComponent<InventoryItem>();
         selectedItem = inventoryItem;
@@ -120,9 +121,7 @@ public class InventoryController : MonoBehaviour
         selectedItemRectTransform.SetAsLastSibling();
 
         // TODO : 수정해야됨
-        int selectedItemID = UnityEngine.Random.Range(0, items.Count);
-        inventoryItem.Set(items[selectedItemID]);
-        //inventoryItem.Set(itemdata);
+        inventoryItem.Set(itemdata);
     }
 
     /** 인벤토리에 아이템을 추가하고, 선택된 아이템을 초기화 한다 */
@@ -132,7 +131,7 @@ public class InventoryController : MonoBehaviour
         if (selectedInventory == null) { return; }
 
         // 선택 아이템 랜덤 생성
-        CreateRandomItem();
+        //CreateRandomItem();
 
         // 생성된 선택 아이템 저장
         InventoryItem itemToInsert = selectedItem;

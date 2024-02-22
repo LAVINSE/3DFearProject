@@ -230,7 +230,7 @@ public class Inventory : MonoBehaviour
     /** 입력한 좌표에 있는 아이템을 가져온다 */
     public InventoryItem GetItem(int x, int y)
     {
-        return inventoryItemSlots[x, y];
+        return inventoryItemSlots[x, y] ?? null;
     }
 
     /** 주어진 위치에 아이템이 들어갈 공간이 있는지 확인한다 */

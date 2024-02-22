@@ -17,6 +17,7 @@ public class PlayerAction : MonoBehaviour
     private bool pickupActivated = false; // 습득 가능할 시 true;
 
     private PlayerKeyCode playerKeyCode;
+    private InventoryController inventoryController;
 
     private RaycastHit itemhitInfo; // 충돌체 정보 저장
     private Transform canvasTransform;
@@ -36,6 +37,7 @@ public class PlayerAction : MonoBehaviour
     private void Awake()
     {
         playerKeyCode = this.GetComponent<PlayerKeyCode>();
+        inventoryController = this.GetComponent<InventoryController>();
 
         canvasTransform = GameObject.FindWithTag("Canvas").transform;
     }
@@ -74,7 +76,18 @@ public class PlayerAction : MonoBehaviour
         // 아이템을 획득 키
         if (Input.GetKeyDown(KeyCode.E))
         {
-            CheckItemPickRayCast();
+            // 아이템을 획득할 수 있을경우
+            if (pickupActivated)
+            {
+                if(itemhitInfo.transform != null)
+                {
+                    Debug.Log($"{itemhitInfo.transform.GetComponent<Item>().ItemData.itemName} 을 획득했습니다");
+
+                    // TODO : 오류확인해야됨
+                    inventoryController.AddItem(itemhitInfo.transform.GetComponent<Item>().ItemData);
+                    HideItemPickText();
+                }
+            }
         }
     }
 
