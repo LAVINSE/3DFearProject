@@ -156,7 +156,7 @@ public class Inventory : MonoBehaviour
     }
 
     /** 입력한 좌표가 그리드 내에 있는지 확인 */
-    private bool PositionCheck(int posX, int posY)
+    public bool PositionCheck(int posX, int posY)
     {
         // 좌표가 음수인 경우
         if(posX < 0 || posY < 0)
@@ -230,7 +230,7 @@ public class Inventory : MonoBehaviour
     /** 입력한 좌표에 있는 아이템을 가져온다 */
     public InventoryItem GetItem(int x, int y)
     {
-        return inventoryItemSlots[x, y] ?? null;
+        return inventoryItemSlots[x, y];
     }
 
     /** 주어진 위치에 아이템이 들어갈 공간이 있는지 확인한다 */

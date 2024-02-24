@@ -75,8 +75,8 @@ public class InventoryController : MonoBehaviour
             return;
         }
 
-        // 인벤토리 아이템 생성
-        CreateRandomItem(itemdata);
+        // 인벤토리에 추가할 아이템을 생성한다
+        CreateInventoryItem(itemdata);
 
         InventoryItem addItem = selectedItem;
         selectedItem = null;
@@ -88,20 +88,6 @@ public class InventoryController : MonoBehaviour
     /** 입력 키 */
     private void InputKey()
     {
-        // Q를 눌렀을 경우
-        if (Input.GetKeyDown(playerKeyCode.testCreateItemKey))
-        {
-            // 아이템 생성
-            //CreateRandomItem();
-        }
-
-        // w를 눌렀을 경우
-        if (Input.GetKeyDown(playerKeyCode.testAddItemKey))
-        {
-            // 인벤토리에 아이템 추가
-            //InsertRandomItem();
-        }
-
         // 아이템 회전 키 R
         if (Input.GetKeyDown(playerKeyCode.RotateItemKeyCode))
         {
@@ -111,7 +97,7 @@ public class InventoryController : MonoBehaviour
     }
 
     /** 인벤토리에 추가할 아이템을 생성한다 */
-    private void CreateRandomItem(ItemData itemdata)
+    private void CreateInventoryItem(ItemData itemdata)
     {
         InventoryItem inventoryItem = Instantiate(itemPrefab).GetComponent<InventoryItem>();
         selectedItem = inventoryItem;
@@ -120,27 +106,8 @@ public class InventoryController : MonoBehaviour
         selectedItemRectTransform.SetParent(canvasTransform);
         selectedItemRectTransform.SetAsLastSibling();
 
-        // TODO : 수정해야됨
+        // 아이템 데이터에 맞게 설정
         inventoryItem.Set(itemdata);
-    }
-
-    /** 인벤토리에 아이템을 추가하고, 선택된 아이템을 초기화 한다 */
-    private void InsertRandomItem()
-    {
-        // 선택된 인벤토리가 없다면 종료
-        if (selectedInventory == null) { return; }
-
-        // 선택 아이템 랜덤 생성
-        //CreateRandomItem();
-
-        // 생성된 선택 아이템 저장
-        InventoryItem itemToInsert = selectedItem;
-
-        // 선택 아이템 초기화
-        selectedItem = null;
-
-        // 인벤토리에 아이템 추가
-        InsertItem(itemToInsert);
     }
 
     /** 인벤토리에 아이템을 추가한다 */
@@ -175,19 +142,21 @@ public class InventoryController : MonoBehaviour
     private void HandleHighlight()
     {
         // 마우스 위치에 따라 타일 좌표를 가져온다
-        Vector2Int positionOnGrid = GetTileGridPosition();
+        Vector2Int tileGridPosition = GetTileGridPosition();
+
+        if(selectedInventory.PositionCheck(tileGridPosition.x, tileGridPosition.y) == false) { return; }
 
         // 이전 위치와 현재 위치가 같다면 종료
-        if(oldPosition == positionOnGrid) { return; }
+        if(oldPosition == tileGridPosition) { return; }
 
         // 이전 위치를 현재 위치로 업데이트
-        oldPosition = positionOnGrid;
+        oldPosition = tileGridPosition;
 
         // 선택된 아이템이 없을 경우
         if (selectedItem == null)
         {
             // 아이템 인벤토리에서 입력한 좌표에 있는 아이템을 가져온다
-            itemToHighlight = selectedInventory.GetItem(positionOnGrid.x, positionOnGrid.y);
+            itemToHighlight = selectedInventory.GetItem(tileGridPosition.x, tileGridPosition.y);
 
             // 인벤토리에서 아이템을 찾았다면
             if(itemToHighlight != null)
@@ -211,15 +180,15 @@ public class InventoryController : MonoBehaviour
         {
             // 현재 위치에 아이템을 배치할 수 있는지 여부에 따라 인벤토리 강조를 표시한다
             inventoryHighlight.Show(selectedInventory.BoundryCheck(
-                positionOnGrid.x,
-                positionOnGrid.y,
+                tileGridPosition.x,
+                tileGridPosition.y,
                 selectedItem.Width,
                 selectedItem.Height));
 
             // 강조의 크기를 설정한다
             inventoryHighlight.SetSize(selectedItem);
             // 강조의 크기를 설정한다
-            inventoryHighlight.SetPosition(selectedInventory, selectedItem, positionOnGrid.x, positionOnGrid.y);
+            inventoryHighlight.SetPosition(selectedInventory, selectedItem, tileGridPosition.x, tileGridPosition.y);
         }
     }
 
@@ -241,6 +210,8 @@ public class InventoryController : MonoBehaviour
 
         // 마우스 위치에 따라 타일 좌표를 가져온다
         Vector2Int tileGridPosition = GetTileGridPosition();
+
+        if (selectedInventory.PositionCheck(tileGridPosition.x, tileGridPosition.y) == false) { return; }
 
         // 선택된 아이템이 없을 경우
         if (selectedItem == null)
@@ -319,5 +290,5 @@ public class InventoryController : MonoBehaviour
 
         selectedItem.Rotate();
     }
-#endregion // 함수
+    #endregion // 함수
 }

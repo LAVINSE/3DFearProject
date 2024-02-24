@@ -8,7 +8,8 @@ public class InventoryInteract : MonoBehaviour, IPointerEnterHandler, IPointerEx
 {
     #region 변수
     private InventoryController inventoryController;
-    private Inventory itemGrid;
+    private Inventory selectedItemInventory;
+    private Inventory baseItemInventory;
     #endregion // 변수
 
     #region 함수 
@@ -16,22 +17,25 @@ public class InventoryInteract : MonoBehaviour, IPointerEnterHandler, IPointerEx
     private void Awake()
     {
         inventoryController = FindObjectOfType(typeof(InventoryController)) as InventoryController;
-        itemGrid = GetComponent<Inventory>();
+        selectedItemInventory = GetComponent<Inventory>();
+        baseItemInventory = GetComponent<Inventory>();
 
         Debug.Log(" 인벤토리 참조 ");
-        //inventoryController.SelectedInventory = itemGrid;
+        inventoryController.SelectedInventory = baseItemInventory;
     }
 
     /** 마우스 커서가 충돌 영역 안으로 들어 올때 */
     public void OnPointerEnter(PointerEventData eventData)
     {
-        inventoryController.SelectedInventory = itemGrid;   
+        inventoryController.SelectedInventory = selectedItemInventory;   
     }
 
     /** 마우스 커서가 충돌 영역 밖으로 나갈 때 */
     public void OnPointerExit(PointerEventData eventData)
     {
-        inventoryController.SelectedInventory = null;
+        // TODO : 수정해야됨
+        //inventoryController.SelectedInventory = null;
+        inventoryController.SelectedInventory = baseItemInventory;
     }
     #endregion // 함수
 }

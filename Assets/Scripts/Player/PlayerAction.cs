@@ -37,9 +37,12 @@ public class PlayerAction : MonoBehaviour
     private void Awake()
     {
         playerKeyCode = this.GetComponent<PlayerKeyCode>();
-        inventoryController = this.GetComponent<InventoryController>();
+        inventoryController = this.GetComponentInChildren<InventoryController>();
 
         canvasTransform = GameObject.FindWithTag("Canvas").transform;
+
+        // 인벤토리 생성 
+        CreateInventory();
     }
 
     /** 초기화 => 상태를 갱신한다 */
@@ -58,18 +61,14 @@ public class PlayerAction : MonoBehaviour
         // 인벤토리 키
         if (Input.GetKeyDown(playerKeyCode.InventoryKey))
         {
-            if (InventoryObj == null)
+            if(InventoryObj != null)
             {
-                // 인벤토리 생성
-                InventoryObj = Instantiate(inventoryUIPrefab);
-                InventoryObj.GetComponent<RectTransform>().SetParent(canvasTransform);
-                InventoryObj.transform.localPosition = Vector3.zero;
+                // 인벤토리 활성화/비활성화
+                InventoryActive(InventoryObj.activeSelf);
             }
             else
             {
-
-                // 인벤토리 활성화/비활성화
-                InventoryActive(InventoryObj.activeSelf);
+                Debug.Log(" 인벤토리가 생성되지 않았습니다 ");
             }
         }
 
@@ -86,8 +85,24 @@ public class PlayerAction : MonoBehaviour
                     // TODO : 오류확인해야됨
                     inventoryController.AddItem(itemhitInfo.transform.GetComponent<Item>().ItemData);
                     HideItemPickText();
+
+                    // 아이템 삭제
+                    Destroy(itemhitInfo.transform.gameObject);
                 }
             }
+        }
+    }
+
+    /** 인벤토리를 생성한다 */
+    private void CreateInventory()
+    {
+        if (InventoryObj == null)
+        {
+            // 인벤토리 생성
+            InventoryObj = Instantiate(inventoryUIPrefab);
+            InventoryObj.GetComponent<RectTransform>().SetParent(canvasTransform);
+            InventoryObj.transform.localPosition = Vector3.zero;
+            InventoryObj.SetActive(false);
         }
     }
 
