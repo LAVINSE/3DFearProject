@@ -5,11 +5,11 @@ using UnityEngine;
 public class Item : MonoBehaviour
 {
     #region 변수
-    [SerializeField] private ItemData itemdata;
+    [SerializeField] private ItemDataSO itemdataSO;
     #endregion // 변수
 
     #region 프로퍼티
-    public ItemData ItemData { get => itemdata; }
+    public ItemDataSO ItemData { get => itemdataSO; }
     #endregion // 프로퍼티
 
     #region 함수

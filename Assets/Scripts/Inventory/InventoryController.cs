@@ -8,7 +8,7 @@ using UnityEngine.Analytics;
 public class InventoryController : MonoBehaviour
 {
     #region 변수
-    [SerializeField] private List<ItemData> items;
+    [SerializeField] private List<ItemDataSO> items;
     [SerializeField] private GameObject itemPrefab;
 
     private Transform canvasTransform;
@@ -66,7 +66,7 @@ public class InventoryController : MonoBehaviour
     }
 
     /** 인벤토리에 아이템을 추가한다 */
-    public void AddItem(ItemData itemdata)
+    public void AddItem(ItemDataSO itemdataSO)
     {
         // 인벤토리가 없을 경우
         if(selectedInventory == null)
@@ -76,7 +76,7 @@ public class InventoryController : MonoBehaviour
         }
 
         // 인벤토리에 추가할 아이템을 생성한다
-        CreateInventoryItem(itemdata);
+        CreateInventoryItem(itemdataSO);
 
         InventoryItem addItem = selectedItem;
         selectedItem = null;
@@ -97,7 +97,7 @@ public class InventoryController : MonoBehaviour
     }
 
     /** 인벤토리에 추가할 아이템을 생성한다 */
-    private void CreateInventoryItem(ItemData itemdata)
+    private void CreateInventoryItem(ItemDataSO itemdata)
     {
         InventoryItem inventoryItem = Instantiate(itemPrefab).GetComponent<InventoryItem>();
         selectedItem = inventoryItem;

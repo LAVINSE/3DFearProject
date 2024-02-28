@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class InventoryItem : MonoBehaviour
 {
     #region 변수
-    public ItemData itemData;
+    public ItemDataSO itemDataSO;
 
     public int onGridPositionX;
     public int onGridPositionY;
@@ -22,9 +22,9 @@ public class InventoryItem : MonoBehaviour
         {
             if(rotate == false)
             {
-                return itemData.width;
+                return itemDataSO.width;
             }
-            return itemData.heigth;
+            return itemDataSO.heigth;
         }
     }
 
@@ -34,18 +34,18 @@ public class InventoryItem : MonoBehaviour
         {
             if (rotate == false)
             {
-                return itemData.heigth;
+                return itemDataSO.heigth;
             }
-            return itemData.width;
+            return itemDataSO.width;
         }
     }
     #endregion // 프로퍼티
 
     #region 함수
     /** 아이템 정보를 받아와 설정한다 */
-    public void Set(ItemData itemData)
+    public void Set(ItemDataSO itemData)
     {
-        this.itemData = itemData;
+        this.itemDataSO = itemData;
 
         this.GetComponent<Image>().sprite = itemData.itemIcon;
 
