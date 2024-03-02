@@ -1,15 +1,13 @@
 using System;
 using System.Collections;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class DialogSystem : MonoBehaviour
 {
     #region 변수
     [SerializeField] private Canvas canvas; // 캔버스
     [SerializeField] private GameObject chatWindowPrefab; // 텍스트 프리팹
-    [SerializeField] private DialogDataSO dialogs; // 현재 분기의 대사 목록 배열
+    [SerializeField] private DialogDataSO dialogDataSo; // 현재 분기의 대사 목록 배열 스크립트오브젝트
     [SerializeField] private float typingSpeed = 0.5f; // 텍스트 타이핑 효과의 재생 속도
     [SerializeField] private bool isAutoStart = true; // 자동 시작 여부
 
@@ -22,15 +20,8 @@ public class DialogSystem : MonoBehaviour
     #endregion // 변수
 
     #region 함수 
-    /** 초기화 */
-    private void Awake()
-    {
-        // 대화창 생성 및 설정
-        CreateChatWindowSetUp();
-    }
-
     /** 대화창 생성 및 설정 */
-    private void CreateChatWindowSetUp()
+    public void CreateChatWindowSetUp()
     {
         // 대화창이 없을 경우 생성
         if(canvas.GetComponentInChildren<ChatWindow>(true) == null)
@@ -39,6 +30,10 @@ public class DialogSystem : MonoBehaviour
             chatWindowObject.transform.SetParent(canvas.transform);
             chatWindowObject.transform.localPosition = Vector3.zero;
             chatWindow = chatWindowObject.GetComponent<ChatWindow>();
+        }
+        else
+        {
+            chatWindow = canvas.GetComponentInChildren<ChatWindow>(true);
         }
 
         // 대화창 오브젝트를 비활성화한다
@@ -74,8 +69,9 @@ public class DialogSystem : MonoBehaviour
         }
 
         // 엔터를 눌렀을 경우
-        if(Input.GetKeyDown(KeyCode.KeypadEnter))
+        if(Input.GetMouseButtonDown(1))
         {
+            Debug.Log("입력");
             // 텍스트 타이핑 효과를 재생중일때 엔터를 클릭하면 타이핑 효과 종료
             if (isTypingEffect == true)
             {
@@ -83,7 +79,7 @@ public class DialogSystem : MonoBehaviour
 
                 // 타이핑 효과를 중지하고, 현재 대사 전체를 출력한다
                 StopCoroutine("OnTypingText");
-                chatWindow.DialogueText.text = dialogs.dialogST[currentDialogIndex].dialogue;
+                chatWindow.DialogueText.text = dialogDataSo.dialogST[currentDialogIndex].dialogue;
                 
                 // 대사가 완료되었을 때 출력되는 커서 활성화
                 chatWindow.objectArrow.SetActive(true);
@@ -92,7 +88,7 @@ public class DialogSystem : MonoBehaviour
             }
 
             // 대사가 남아있을 경우 다음 대사 진행
-            if(dialogs.dialogST.Length > currentDialogIndex + 1)
+            if(dialogDataSo.dialogST.Length > currentDialogIndex + 1)
             {
                 // 다음 대사를 진행/설정한다
                 SetNextDialog();
@@ -120,7 +116,7 @@ public class DialogSystem : MonoBehaviour
         SetActiveObjects(chatWindow, true);
 
         // 현재 화자 이름 텍스트 설정
-        chatWindow.characterNameText.text = dialogs.dialogST[currentDialogIndex].dialogcharacterName;
+        chatWindow.characterNameText.text = dialogDataSo.dialogST[currentDialogIndex].dialogcharacterName;
 
         // 현재 화자의 대사 텍스트 설정
         StartCoroutine("OnTypingText");
@@ -131,15 +127,15 @@ public class DialogSystem : MonoBehaviour
     /** 현재 화자의 대사를 한글자씩 타이핑을 한다 */
     private IEnumerator OnTypingText()
     {
-        int index = 0;
-
         isTypingEffect = true;
 
+        int index = 0;
+
         // 텍스트를 한글자씩 타이핑치듯 재생
-        while (index < dialogs.dialogST[currentDialogIndex].dialogue.Length)
+        while (index < dialogDataSo.dialogST[currentDialogIndex].dialogue.Length)
         {
             // 현재 화자의 대사를 한글자씩 타이핑
-            chatWindow.DialogueText.text = dialogs.dialogST[currentDialogIndex].dialogue.Substring(0, index + 1);
+            chatWindow.DialogueText.text = dialogDataSo.dialogST[currentDialogIndex].dialogue.Substring(0, index + 1);
 
             index++;
 
