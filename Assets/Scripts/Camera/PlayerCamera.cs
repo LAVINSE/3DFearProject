@@ -11,6 +11,7 @@ public class PlayerCamera : MonoBehaviour
 
     [Header("=====> 방향 <=====")]
     public Transform orientation;
+    public Transform viewDirection;
 
     private float xRotation;
     private float yRotation;
@@ -40,6 +41,7 @@ public class PlayerCamera : MonoBehaviour
         // 회전 적용
         transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
         orientation.rotation = Quaternion.Euler(0, yRotation, 0);
+        viewDirection.rotation = Quaternion.Euler(xRotation, yRotation, 0);
     }
     #endregion // 함수
 }

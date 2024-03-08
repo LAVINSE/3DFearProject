@@ -9,7 +9,7 @@ public class PlayerAction : MonoBehaviour
 {
     #region 변수
     [SerializeField] private GameObject inventoryUIPrefab;
-    [SerializeField] private GameObject orientation; // 플레이어 방향
+    [SerializeField] private GameObject viewDirection; // 플레이어가 보는 방향
     [SerializeField] private float itemPickRange = 2f; // 아이템 습득 가능한 최대 거리
     [SerializeField] private LayerMask layerMask; // 아이템 레이어
     [SerializeField] private TMP_Text actionText; // 아이템 줍는 액션 텍스트
@@ -31,7 +31,7 @@ public class PlayerAction : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawRay(orientation.transform.position, orientation.transform.TransformDirection(Vector3.forward) * itemPickRange);
+        Gizmos.DrawRay(viewDirection.transform.position, viewDirection.transform.TransformDirection(Vector3.forward) * itemPickRange);
     }
     /** 초기화 */
     private void Awake()
@@ -110,7 +110,7 @@ public class PlayerAction : MonoBehaviour
     private void CheckItemPickRayCast()
     {
         // 플레이어 현재 바라보고 있는 방향, 줍기 거리, 아이템 레이어가 맞는지 검사하고, hitInfo에 저장한다
-        if (Physics.Raycast(orientation.transform.position, this.orientation.transform.TransformDirection(Vector3.forward),
+        if (Physics.Raycast(viewDirection.transform.position, this.viewDirection.transform.TransformDirection(Vector3.forward),
             out itemhitInfo, itemPickRange, layerMask))
         {
             // 아이템일 경우
