@@ -116,6 +116,8 @@ public class PlayerAction : MonoBehaviour
             // 아이템일 경우
             if (itemhitInfo.transform.CompareTag("Item"))
             {
+                Debug.Log("테스트");
+
                 // 아이템 획득 텍스트를 보여준다
                 ShowItemPickText();
             }

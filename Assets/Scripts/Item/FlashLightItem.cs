@@ -24,11 +24,13 @@ public class FlashLightItem : MonoBehaviour
         {
             flashLightPrefab.SetActive(true);
             isOn = true;
+            // 배터리 시스템 온
         }
         else if(isOn && Input.GetKeyDown(KeyCode.E))
         {
             flashLightPrefab.SetActive(false);
             isOn = false;
+            // 배터리 시스템 오프
         }
     }
     #endregion // 함수
