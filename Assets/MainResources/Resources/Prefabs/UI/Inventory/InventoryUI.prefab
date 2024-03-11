@@ -123,8 +123,13 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 318995506805112041, guid: 4763c50f3fd84d641b7d7b56493d4a69,
         type: 3}
+      propertyPath: gridSizeWidth
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 318995506805112041, guid: 4763c50f3fd84d641b7d7b56493d4a69,
+        type: 3}
       propertyPath: gridSizeHeight
-      value: 20
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 318995506805112042, guid: 4763c50f3fd84d641b7d7b56493d4a69,
         type: 3}
@@ -164,12 +169,27 @@ PrefabInstance:
     - target: {fileID: 318995506805112042, guid: 4763c50f3fd84d641b7d7b56493d4a69,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 640
+      value: 64
       objectReference: {fileID: 0}
     - target: {fileID: 318995506805112042, guid: 4763c50f3fd84d641b7d7b56493d4a69,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 640
+      value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 318995506805112042, guid: 4763c50f3fd84d641b7d7b56493d4a69,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 318995506805112042, guid: 4763c50f3fd84d641b7d7b56493d4a69,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 318995506805112042, guid: 4763c50f3fd84d641b7d7b56493d4a69,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 318995506805112042, guid: 4763c50f3fd84d641b7d7b56493d4a69,
         type: 3}
@@ -231,6 +251,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 318995506805112043, guid: 4763c50f3fd84d641b7d7b56493d4a69,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9453c931f2d411d4998c06873b372809,
+        type: 3}
     - target: {fileID: 318995506805112043, guid: 4763c50f3fd84d641b7d7b56493d4a69,
         type: 3}
       propertyPath: m_PixelsPerUnitMultiplier

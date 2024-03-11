@@ -90,8 +90,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdad20b0a41c70447885530799231af1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridSizeWidth: 20
-  gridSizeHeight: 10
+  gridSizeWidth: 5
+  gridSizeHeight: 5
 --- !u!114 &318995506805112038
 MonoBehaviour:
   m_ObjectHideFlags: 0

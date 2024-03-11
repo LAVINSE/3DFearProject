@@ -10,8 +10,8 @@ public class Inventory : MonoBehaviour
     [SerializeField] private int gridSizeWidth = 20;
     [SerializeField] private int gridSizeHeight = 10;
 
-    public const float tileSizeWidth = 32;
-    public const float tileSizeHeight = 32;
+    public const float tileSizeWidth = 64;
+    public const float tileSizeHeight = 64;
 
     private InventoryItem[,] inventoryItemSlots;
 
