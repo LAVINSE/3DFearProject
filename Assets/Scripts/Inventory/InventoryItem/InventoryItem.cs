@@ -2,9 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InventoryItem : MonoBehaviour
+public class InventoryItem : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     #region 변수
     public ItemDataSO itemDataSO;
@@ -27,7 +28,6 @@ public class InventoryItem : MonoBehaviour
             return itemDataSO.heigth;
         }
     }
-
     public int Height
     {
         get
@@ -64,6 +64,29 @@ public class InventoryItem : MonoBehaviour
 
         RectTransform rectTransform = this.GetComponent<RectTransform>();
         rectTransform.rotation = Quaternion.Euler(0, 0, rotate == true ? 90f : 0f);
+    }
+
+    /** 클릭했을때 */
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if(eventData.button == PointerEventData.InputButton.Right)
+        {
+            // TODO : 아이템 사용
+            itemDataSO.itemUse();
+            Destroy(this.gameObject);
+        }
+    }
+
+    /** 마우스를 올렸을때 */
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        throw new NotImplementedException();
+    }
+
+    /** 마우스가 나갔을때 */
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        throw new NotImplementedException();
     }
     #endregion // 함수
 }

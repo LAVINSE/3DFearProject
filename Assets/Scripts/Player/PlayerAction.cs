@@ -73,7 +73,7 @@ public class PlayerAction : MonoBehaviour
         }
 
         // 아이템을 획득 키
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(playerKeyCode.PickupItemKeyCode))
         {
             // 아이템을 획득할 수 있을경우
             if (pickupActivated)
@@ -116,8 +116,6 @@ public class PlayerAction : MonoBehaviour
             // 아이템일 경우
             if (itemhitInfo.transform.CompareTag("Item"))
             {
-                Debug.Log("테스트");
-
                 // 아이템 획득 텍스트를 보여준다
                 ShowItemPickText();
             }

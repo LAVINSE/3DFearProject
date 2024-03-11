@@ -17,6 +17,7 @@ public class InventoryController : MonoBehaviour
     private PlayerKeyCode playerKeyCode;
     private Inventory selectedInventory; // 아이템 인벤토리 변수
     private InventoryItem selectedItem;
+    private InventoryItem selectedItemTEst;
     private InventoryItem overlapItem;
     private InventoryItem itemToHighlight;
     private InventoryHighlight inventoryHighlight;
@@ -65,6 +66,17 @@ public class InventoryController : MonoBehaviour
         }
     }
 
+    /** 입력 키 */
+    private void InputKey()
+    {
+        // 아이템 회전 키 R
+        if (Input.GetKeyDown(playerKeyCode.RotateItemKeyCode))
+        {
+            // 아이템 회전
+            RotateItem();
+        }
+    }
+
     /** 인벤토리에 아이템을 추가한다 */
     public void AddItem(ItemDataSO itemdataSO)
     {
@@ -83,17 +95,6 @@ public class InventoryController : MonoBehaviour
 
         // 인벤토리에 아이템 추가
         InsertItem(addItem);
-    }
-
-    /** 입력 키 */
-    private void InputKey()
-    {
-        // 아이템 회전 키 R
-        if (Input.GetKeyDown(playerKeyCode.RotateItemKeyCode))
-        {
-            // 아이템 회전
-            RotateItem();
-        }
     }
 
     /** 인벤토리에 추가할 아이템을 생성한다 */
@@ -211,7 +212,7 @@ public class InventoryController : MonoBehaviour
         // 마우스 위치에 따라 타일 좌표를 가져온다
         Vector2Int tileGridPosition = GetTileGridPosition();
 
-        if (selectedInventory.PositionCheck(tileGridPosition.x, tileGridPosition.y) == false) { return; }
+        if(selectedInventory.PositionCheck(tileGridPosition.x, tileGridPosition.y) == false) { return; }
 
         // 선택된 아이템이 없을 경우
         if (selectedItem == null)

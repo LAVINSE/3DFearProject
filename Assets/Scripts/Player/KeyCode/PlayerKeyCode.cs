@@ -11,9 +11,7 @@ public class PlayerKeyCode : MonoBehaviour
     [Tooltip(" 웅크리기 키 ")] public KeyCode CrouchKey = KeyCode.LeftControl;
     [Tooltip(" 인벤토리 키 ")] public KeyCode InventoryKey = KeyCode.I;
     [Tooltip(" 인벤토리 아이템 회전 키 ")] public KeyCode RotateItemKeyCode = KeyCode.R;
-
-    [Header("=====> 테스트 키 입력 <=====")]
-    [Tooltip(" 테스트 아이템 생성 키 ")] public KeyCode testCreateItemKey = KeyCode.Q;
-    [Tooltip(" 테스트 아이템 추가 키 ")] public KeyCode testAddItemKey = KeyCode.W;
+    [Tooltip(" 손전등 키 ")] public KeyCode FlashLightKeyCode = KeyCode.X;
+    [Tooltip(" 아이템 획득 키 ")] public KeyCode PickupItemKeyCode = KeyCode.E;
     #endregion // 변수
 }

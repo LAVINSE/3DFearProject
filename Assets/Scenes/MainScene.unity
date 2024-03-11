@@ -1534,7 +1534,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1806177109}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f7b1a60a7f18314cb6291fe8f52dbbc, type: 3}
+  m_Script: {fileID: 11500000, guid: 74d746efd234fd0439a3202e3c1652bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   itemdataSO: {fileID: 11400000, guid: a2633089bce73744aaad5d3d097d9b7c, type: 2}
@@ -1830,6 +1830,11 @@ PrefabInstance:
     - target: {fileID: 989970604, guid: ae9bc4f39d78c594ebe0e8ef651092ab, type: 3}
       propertyPath: m_Name
       value: "ViewDirection(\uBCF4\uB294 \uC2DC\uC810)"
+      objectReference: {fileID: 0}
+    - target: {fileID: 3212360849612401866, guid: ae9bc4f39d78c594ebe0e8ef651092ab,
+        type: 3}
+      propertyPath: PickupItemKeyCode
+      value: 101
       objectReference: {fileID: 0}
     - target: {fileID: 3368688977186770048, guid: ae9bc4f39d78c594ebe0e8ef651092ab,
         type: 3}

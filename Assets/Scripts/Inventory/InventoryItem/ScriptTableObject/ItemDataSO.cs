@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,8 +7,11 @@ using UnityEngine;
 public class ItemDataSO : ScriptableObject
 {
     public string itemName = string.Empty;
+
     public int width = 1;
     public int heigth = 1;
 
     public Sprite itemIcon;
+
+    public Action itemUse;
 }

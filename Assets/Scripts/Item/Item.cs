@@ -9,7 +9,11 @@ public class Item : MonoBehaviour
     #endregion // 변수
 
     #region 프로퍼티
-    public ItemDataSO ItemData { get => itemdataSO; }
+    public ItemDataSO ItemData
+    { 
+        get => itemdataSO;
+        set => itemdataSO = value;
+    }
     #endregion // 프로퍼티
 
     #region 함수
