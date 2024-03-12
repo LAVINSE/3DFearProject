@@ -14,6 +14,8 @@ public class InventoryItem : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     public int onGridPositionY;
 
     public bool rotate = false;
+
+    public Image image;
     #endregion // 변수
 
     #region 프로퍼티
@@ -39,9 +41,24 @@ public class InventoryItem : MonoBehaviour, IPointerClickHandler, IPointerEnterH
             return itemDataSO.width;
         }
     }
+
+    public InventoryController inventoryController { get; set; }
     #endregion // 프로퍼티
 
     #region 함수
+    /** 초기화 */
+    private void Awake()
+    {
+        image = GetComponent<Image>();
+
+        
+    }
+
+    private void Start()
+    {
+        
+    }
+
     /** 아이템 정보를 받아와 설정한다 */
     public void Set(ItemDataSO itemData)
     {
@@ -71,22 +88,39 @@ public class InventoryItem : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     {
         if(eventData.button == PointerEventData.InputButton.Right)
         {
-            // TODO : 아이템 사용
-            itemDataSO.itemUse();
-            Destroy(this.gameObject);
+            inventoryController.itemUseShowTextUI.gameObject.SetActive(true);
         }
     }
 
     /** 마우스를 올렸을때 */
     public void OnPointerEnter(PointerEventData eventData)
     {
-        throw new NotImplementedException();
+        
     }
 
     /** 마우스가 나갔을때 */
     public void OnPointerExit(PointerEventData eventData)
     {
-        throw new NotImplementedException();
+        
+    }
+
+    public void ShowText(bool isOK)
+    {
+        // TODO : 아이템 사용
+        // true일 경우 파괴
+
+        if (isOK)
+        {
+            if (itemDataSO.itemUse())
+            {
+                Destroy(this.gameObject);
+                inventoryController.itemUseShowTextUI.gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            inventoryController.itemUseShowTextUI.gameObject.SetActive(false);
+        }
     }
     #endregion // 함수
 }

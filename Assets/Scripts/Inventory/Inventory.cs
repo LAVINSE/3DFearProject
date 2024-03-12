@@ -7,8 +7,8 @@ using UnityEngine;
 public class Inventory : MonoBehaviour
 {
     #region º¯¼ö
-    [SerializeField] private int gridSizeWidth = 20;
-    [SerializeField] private int gridSizeHeight = 10;
+    [SerializeField] private int gridSizeWidth = 4;
+    [SerializeField] private int gridSizeHeight = 2;
 
     public const float tileSizeWidth = 64;
     public const float tileSizeHeight = 64;

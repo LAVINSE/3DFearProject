@@ -14,6 +14,8 @@ public class PlayerAction : MonoBehaviour
     [SerializeField] private LayerMask layerMask; // 아이템 레이어
     [SerializeField] private TMP_Text actionText; // 아이템 줍는 액션 텍스트
 
+    [SerializeField] private GameObject flashLightPrefab;
+
     private bool pickupActivated = false; // 습득 가능할 시 true;
 
     private PlayerKeyCode playerKeyCode;
@@ -24,6 +26,7 @@ public class PlayerAction : MonoBehaviour
     #endregion // 변수
 
     #region 프로퍼티
+    public static PlayerAction instance { get; private set; }
     public GameObject InventoryObj { get; set; }
     #endregion // 프로퍼티
 
@@ -36,12 +39,14 @@ public class PlayerAction : MonoBehaviour
     /** 초기화 */
     private void Awake()
     {
+        instance = this;
+
         playerKeyCode = this.GetComponent<PlayerKeyCode>();
         inventoryController = this.GetComponentInChildren<InventoryController>();
 
         canvasTransform = GameObject.FindWithTag("Canvas").transform;
 
-        // 인벤토리 생성 
+        // 인벤토리를 생성한다
         CreateInventory();
     }
 
@@ -82,12 +87,22 @@ public class PlayerAction : MonoBehaviour
                 {
                     Debug.Log($"{itemhitInfo.transform.GetComponent<Item>().ItemData.itemName} 을 획득했습니다");
 
+                    bool isCheck;
+
                     // TODO : 오류확인해야됨
-                    inventoryController.AddItem(itemhitInfo.transform.GetComponent<Item>().ItemData);
+                    isCheck = inventoryController.AddItem(itemhitInfo.transform.GetComponent<Item>().ItemData);
                     HideItemPickText();
 
-                    // 아이템 삭제
-                    Destroy(itemhitInfo.transform.gameObject);
+                    if (isCheck)
+                    {
+                        // 아이템 삭제
+                        Destroy(itemhitInfo.transform.gameObject);
+                    }
+                    else
+                    {
+                        Debug.Log(" 인벤토리가 가득 찼습니다 ");
+                    }
+                    
                 }
             }
         }
@@ -147,6 +162,12 @@ public class PlayerAction : MonoBehaviour
     private void InventoryActive(bool isActive)
     {
         InventoryObj.SetActive(!isActive);
+    }
+
+    /** 손전등을 활성화 한다 */
+    public void FlashLightActive(bool isActive)
+    {
+        flashLightPrefab.SetActive(isActive);
     }
     #endregion // 함수
 }

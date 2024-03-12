@@ -361,10 +361,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab46325c0a622e541bb29065e977c965, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flashLightPrefab: {fileID: 735746738541404457}
+  lightPrefab: {fileID: 735746738541404457}
   turnOnSound: {fileID: 0}
   turnOffSound: {fileID: 0}
   isOn: 0
+  batteryTime: 60
 --- !u!1 &4503555412756395231
 GameObject:
   m_ObjectHideFlags: 0

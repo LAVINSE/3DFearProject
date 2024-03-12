@@ -13,5 +13,5 @@ public class ItemDataSO : ScriptableObject
 
     public Sprite itemIcon;
 
-    public Action itemUse;
+    public Func<bool> itemUse;
 }

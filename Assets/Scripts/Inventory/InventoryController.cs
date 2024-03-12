@@ -4,10 +4,13 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Analytics;
+using UnityEngine.UI;
 
 public class InventoryController : MonoBehaviour
 {
     #region 변수
+    [SerializeField] private GameObject showObject;
+
     [SerializeField] private List<ItemDataSO> items;
     [SerializeField] private GameObject itemPrefab;
 
@@ -17,7 +20,6 @@ public class InventoryController : MonoBehaviour
     private PlayerKeyCode playerKeyCode;
     private Inventory selectedInventory; // 아이템 인벤토리 변수
     private InventoryItem selectedItem;
-    private InventoryItem selectedItemTEst;
     private InventoryItem overlapItem;
     private InventoryItem itemToHighlight;
     private InventoryHighlight inventoryHighlight;
@@ -35,6 +37,8 @@ public class InventoryController : MonoBehaviour
             inventoryHighlight.SetParent(value);
         }
     }
+
+    public ItemUseShowTextUI itemUseShowTextUI { get; set; }
     #endregion // 프로퍼티
 
     #region 함수
@@ -44,6 +48,13 @@ public class InventoryController : MonoBehaviour
         playerKeyCode = this.GetComponentInParent<PlayerKeyCode>();
         inventoryHighlight = this.GetComponent<InventoryHighlight>();
         canvasTransform = GameObject.FindWithTag("Canvas").transform;
+    }
+
+    /** 초기화 */
+    private void Start()
+    {
+        // 선택창 생성
+        itemUseShowTextUI = Instantiate(showObject, canvasTransform).GetComponent<ItemUseShowTextUI>();
     }
 
     /** 초기화 => 상태를 갱신한다 */
@@ -59,7 +70,7 @@ public class InventoryController : MonoBehaviour
         InventoryHighlight();
 
         // 마우스 왼쪽 클릭을 했을경우
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && itemUseShowTextUI.gameObject.activeSelf == false)
         {
             // 왼쪽 클릭을 했을때 작동
             LeftMouseButtonPress();
@@ -78,13 +89,13 @@ public class InventoryController : MonoBehaviour
     }
 
     /** 인벤토리에 아이템을 추가한다 */
-    public void AddItem(ItemDataSO itemdataSO)
+    public bool AddItem(ItemDataSO itemdataSO)
     {
         // 인벤토리가 없을 경우
         if(selectedInventory == null)
         {
             Debug.Log(" 인벤토리가 없습니다 ");
-            return;
+            return false;
         }
 
         // 인벤토리에 추가할 아이템을 생성한다
@@ -94,13 +105,26 @@ public class InventoryController : MonoBehaviour
         selectedItem = null;
 
         // 인벤토리에 아이템 추가
-        InsertItem(addItem);
+        if(InsertItem(addItem) == false)
+        {
+            // 미리 생성된 아이템 삭제
+            Destroy(addItem.gameObject);
+            return false;
+        }
+
+        return true;
     }
 
     /** 인벤토리에 추가할 아이템을 생성한다 */
     private void CreateInventoryItem(ItemDataSO itemdata)
     {
         InventoryItem inventoryItem = Instantiate(itemPrefab).GetComponent<InventoryItem>();
+
+        // 컨트롤러 참조 및 버튼 설정
+        inventoryItem.inventoryController = this;
+        itemUseShowTextUI.okbutton.onClick.AddListener(() => inventoryItem.ShowText(true));
+        itemUseShowTextUI.cancelbutton.onClick.AddListener(() => inventoryItem.ShowText(false));
+
         selectedItem = inventoryItem;
 
         selectedItemRectTransform = inventoryItem.GetComponent<RectTransform>();
@@ -112,16 +136,18 @@ public class InventoryController : MonoBehaviour
     }
 
     /** 인벤토리에 아이템을 추가한다 */
-    private void InsertItem(InventoryItem itemToInsert)
+    private bool InsertItem(InventoryItem itemToInsert)
     {
         // 인벤토리에 아이템이 들어갈 위치를 반환한다
         Vector2Int? posOnGrid = selectedInventory.FindSpaceForObject(itemToInsert);
 
         // 아이템이 들어갈 위치가 없을 경우 종료
-        if (posOnGrid == null) { return; }
+        if (posOnGrid == null) { return false; }
 
         // 선택된 인벤토리에 들어갈 위치에 아이템 배치
         selectedInventory.PlaceItem(itemToInsert, posOnGrid.Value.x, posOnGrid.Value.y);
+
+        return true;
     }
 
     /** 인벤토리 아이템 하이라이트 */
@@ -226,6 +252,7 @@ public class InventoryController : MonoBehaviour
             // 해당 위치에 배치
             PlaceItem(tileGridPosition);
         }
+        
     }
 
     /** 마우스 위치에 따라 타일 좌표를 가져온다 */
@@ -255,6 +282,7 @@ public class InventoryController : MonoBehaviour
         // 선택한 아이템이 있을경우
         if (selectedItem != null)
         {
+            selectedItem.image.raycastTarget = false;
             selectedItemRectTransform = selectedItem.GetComponent<RectTransform>();
         }
     }
@@ -268,6 +296,8 @@ public class InventoryController : MonoBehaviour
         // 아이템 배치에 성공했을 경우
         if (complete)
         {
+            selectedItem.image.raycastTarget = true;
+
             // 선택된 아이템 초기화
             selectedItem = null;
 
