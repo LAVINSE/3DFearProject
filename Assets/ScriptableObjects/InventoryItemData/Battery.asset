@@ -15,4 +15,4 @@ MonoBehaviour:
   itemName: "\uBC30\uD130\uB9AC"
   width: 1
   heigth: 1
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 1469969573, guid: 6f22035c7e036ac41b0465c10a76726d, type: 3}
