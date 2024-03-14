@@ -15,12 +15,19 @@ public class PlayerMovement : MonoBehaviour
     }
 
     #region 변수
+    [Header("=====> 애니메이션 <=====")]
+    [SerializeField, Tooltip(" 플레이어 모델 ")] private GameObject playerModel;
+    [SerializeField, Tooltip(" 애니메이터 ")] private Animator animator;
+
     [Header("=====> 이동 <=====")]
+    [SerializeField] private float moveSpeed = 0;
     [SerializeField, Tooltip(" 걷는 속도 ")] private float walkSpeed;
     [SerializeField, Tooltip(" 달리기 속도 ")] private float sprintSpeed;
     [SerializeField, Tooltip(" 보정 값 ")] private float correctMoveSpeed;
     [SerializeField, Tooltip(" 저항 값 ")] private float baseDrag;
+    [SerializeField, Tooltip(" 보정 값 ")] private float correctPlayerHeight;
     [SerializeField, Tooltip(" 나아갈 방향 ")] private Transform orientation;
+    [SerializeField, Tooltip(" 바닥 레이어 ")] private LayerMask groundLayer;
     [SerializeField, Tooltip(" 이동 상태 ")] private MovementState movementState;
 
     [Header("=====> 경사면 설정 <=====")]
@@ -28,7 +35,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField, Tooltip(" 보정 값 ")] private float correctPlayerSlopeHeight;
     [SerializeField] private bool isExitingSlop;
     [SerializeField] private RaycastHit slopeHit;
-
+    
     [Header("=====> 웅크리기 설정 <=====")]
     [SerializeField, Tooltip(" 웅크리기 속도 ")] private float crouchSpeed;
     [SerializeField, Tooltip(" 웅크리기 Y 값 ")] private float crouchScaleY;
@@ -37,15 +44,11 @@ public class PlayerMovement : MonoBehaviour
     [Header("=====> 점프 설정 <=====")]
     [SerializeField, Tooltip(" 점프 힘 ")] private float jumpPower;
     [SerializeField, Tooltip(" 점프 쿨타임 ")] private float jumpCooldown;
-    [SerializeField, Tooltip(" 플레이어 객체 높이 ")] private float playerHeight;
-    [SerializeField, Tooltip(" 보정 값 ")] private float correctPlayerJumpHeight;
-    [SerializeField, Tooltip(" 바닥 레이어 ")] private LayerMask groundLayer;
 
     private bool isJump;
     private bool isGround;
 
     private float airMultiplier = 0;
-    [SerializeField] private float moveSpeed = 0;
     private float horizontalInput;
     private float verticalInput;
 
@@ -72,11 +75,15 @@ public class PlayerMovement : MonoBehaviour
     {
         rigid.freezeRotation = true;
 
+        /*
         // 점프 초기화
         PlayerResetJump();
+        */
 
+        /*
         // 값 설정
         crouchStartScaleY = this.transform.localScale.y;
+        */
     }
 
     /** 초기화 => 상태를 갱신한다 */
@@ -85,7 +92,14 @@ public class PlayerMovement : MonoBehaviour
         if (playerState.currentState != playerState.stateArray[(int)PlayerState.EPlayerStateType.Movement]) { return; }
 
         // 오브젝트의 높이 절반 + 보정값
-        isGround = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + correctPlayerJumpHeight, groundLayer);
+        isGround = Physics.Raycast(transform.position, Vector3.down, correctPlayerHeight, groundLayer);
+
+        if (isGround)
+        {
+            Debug.Log("test");
+        }
+
+        playerModel.transform.localRotation = orientation.transform.localRotation;
 
         // 플레이어 입력처리
         PlayerInput();
@@ -113,6 +127,7 @@ public class PlayerMovement : MonoBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
         
+        /*
         // 점프
         if(Input.GetKey(playerKeyCode.JumpKey) && isJump && isGround)
         {
@@ -124,7 +139,9 @@ public class PlayerMovement : MonoBehaviour
             // 점프 쿨타임
             Invoke(nameof(PlayerResetJump), jumpCooldown);
         }
+        */
 
+        /*
         // 웅크리기 시작
         if (Input.GetKeyDown(playerKeyCode.CrouchKey))
         {
@@ -138,36 +155,47 @@ public class PlayerMovement : MonoBehaviour
             this.transform.localScale = new Vector3(this.transform.localScale.x, crouchStartScaleY, this.transform.localScale.z);
             movementState = MovementState.None;
         }
+        */
     }
 
     /** 이동 상태 제어 */
     private void MovementStateHandler()
     {
-        // 웅크리기
-        if (Input.GetKey(playerKeyCode.CrouchKey))
-        {
-            movementState = MovementState.crouch;
-            moveSpeed = crouchSpeed;
-        }
-
         // 달리기
-        if(isGround && Input.GetKey(playerKeyCode.SprintKey))
+        if (isGround && Input.GetKey(playerKeyCode.SprintKey))
         {
-
             movementState = MovementState.sprint;
             moveSpeed = sprintSpeed;
+
+            // 플레이어 이동 애니메이션
+            PlayerMoveAnimation();
         }
         // 걷기
         else if (isGround && movementState != MovementState.crouch)
         {
             movementState = MovementState.walk;
             moveSpeed = walkSpeed;
+
+            // 플레이어 이동 애니메이션
+            PlayerMoveAnimation();
         }
+
+        /*
         // 공중
         else
         {
             movementState = MovementState.air;
         }
+        */
+
+        /*
+        // 웅크리기
+        if (Input.GetKey(playerKeyCode.CrouchKey))
+        {
+            movementState = MovementState.crouch;
+            moveSpeed = crouchSpeed;
+        }
+        */
     }
 
     /** 플레이어 이동 */
@@ -185,6 +213,19 @@ public class PlayerMovement : MonoBehaviour
         {
             // 이동
             rigid.AddForce(moveDirection.normalized * moveSpeed * correctMoveSpeed * airMultiplier, ForceMode.Force);
+        }
+    }
+
+    /** 플레이어 이동 애니메이션 */
+    private void PlayerMoveAnimation()
+    {
+        if (rigid.velocity.magnitude * verticalInput != 0 || rigid.velocity.magnitude * horizontalInput != 0)
+        {
+            animator.SetBool("isWalk", true);
+        }
+        else
+        {
+            animator.SetBool("isWalk", false);
         }
     }
 
@@ -244,8 +285,7 @@ public class PlayerMovement : MonoBehaviour
     /** 경사면인지 확인 */
     private bool OnSlope()
     {
-        // 
-        if (Physics.Raycast(this.transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + correctPlayerSlopeHeight))
+        if (Physics.Raycast(this.transform.position, Vector3.down, out slopeHit, correctPlayerSlopeHeight))
         {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
             return angle < maxSlopeAngle && angle != 0;
