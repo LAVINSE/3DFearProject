@@ -20,6 +20,8 @@ public class DialogSystem : MonoBehaviour
     #endregion // 변수
 
     #region 함수 
+    public void DisableWindow() => chatWindow.gameObject.SetActive(false);
+
     /** 대화창 생성 및 설정 */
     public void CreateChatWindowSetUp()
     {

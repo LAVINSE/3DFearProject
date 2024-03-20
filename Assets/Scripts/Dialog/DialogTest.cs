@@ -22,5 +22,15 @@ public class DialogTest : MonoBehaviour
             Debug.Log(" 다음 대사 분기 있으면 시작 ");
         }
     }
+
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+
+        foreach (var dialogSystem in dislogSystemList)
+        {
+            dialogSystem.DisableWindow();
+        }   
+    }
     #endregion // 함수
 }
